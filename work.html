@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work, Quiet Aperture</title>
+<meta name="description" content="Selected portrait, fashion, editorial and documentary work from Quiet Aperture in Lisbon.">
+<meta name="theme-color" content="#fafaf8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27 fill=%27none%27 stroke=%27%230b0b0b%27 stroke-width=%272%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2713%27/%3E%3Cpath d=%27M16 3l6 10.4M29 16H17M22 28.4L16 18M10 28.4l6-10.4M3 16h12M10 3.6L16 14%27/%3E%3C/svg%3E">
+
+<!--
+  HOW TO ADD A PHOTO
+  Copy one <figure> block below, change the file name, width, height (the real pixel size), the title and the
+  data-cat (portrait, fashion, editorial, documentary or space). Put the image in the "images" folder.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/work.css">
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html" aria-label="Quiet Aperture, home">
+    <svg viewBox="0 0 32 32" fill="none" stroke="#0b0b0b" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M16 3l6 10.4M29 16H17M22 28.4L16 18M10 28.4l6-10.4M3 16h12M10 3.6L16 14"/></svg>
+    Quiet Aperture
+  </a>
+  <nav aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="work.html" aria-current="page">Work</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+  <section class="intro">
+    <h1>Selected work</h1>
+    <p class="lead">Portraits, fashion, editorial and documentary pictures from the last two years. Tap any photo to see it larger.</p>
+  </section>
+
+  <div class="filters" role="group" aria-label="Filter by type">
+    <button type="button" aria-pressed="true" data-filter="all">All</button>
+    <button type="button" aria-pressed="false" data-filter="portrait">Portrait</button>
+    <button type="button" aria-pressed="false" data-filter="fashion">Fashion</button>
+    <button type="button" aria-pressed="false" data-filter="editorial">Editorial</button>
+    <button type="button" aria-pressed="false" data-filter="documentary">Documentary</button>
+    <button type="button" aria-pressed="false" data-filter="space">Spaces</button>
+  </div>
+
+  <div class="grid">
+    <figure data-cat="portrait"><button class="ph" type="button"><img src="images/capture-portraits.jpg" width="819" height="1024" loading="lazy" decoding="async" alt="A woman in a black top walks toward the camera along a sunlit white wall."></button><figcaption><b>Morning walk</b><span>Portrait, 2026</span></figcaption></figure>
+    <figure data-cat="portrait"><button class="ph" type="button"><img src="images/work-mask-series.jpg" width="1024" height="637" loading="lazy" decoding="async" alt="A woman with a sheer black veil over the lower half of her face, looking into the camera."></button><figcaption><b>Mask Series</b><span>Portrait, 2026</span></figcaption></figure>
+    <figure data-cat="fashion"><button class="ph" type="button"><img src="images/capture-fashion.jpg" width="1125" height="1406" loading="lazy" decoding="async" alt="A model in a long black silk coat caught mid-step against a concrete wall."></button><figcaption><b>Silk in motion</b><span>Fashion, 2026</span></figcaption></figure>
+    <figure data-cat="fashion"><button class="ph" type="button"><img src="images/work-after-hours.jpg" width="1024" height="637" loading="lazy" decoding="async" alt="A woman in a black jacket and satin dress seated on a leather bench in a dark studio."></button><figcaption><b>After Hours</b><span>Fashion, 2026</span></figcaption></figure>
+    <figure data-cat="editorial"><button class="ph" type="button"><img src="images/capture-editorial.jpg" width="1125" height="1406" loading="lazy" decoding="async" alt="A woman in a black blazer seated on a stool with a diagonal block of light on the wall behind her."></button><figcaption><b>Block of light</b><span>Editorial, 2026</span></figcaption></figure>
+    <figure data-cat="editorial"><button class="ph" type="button"><img src="images/work-concrete-silk.jpg" width="1024" height="637" loading="lazy" decoding="async" alt="A woman in a pale silk dress leaning on a concrete wall, her shadow beside her."></button><figcaption><b>Concrete and Silk</b><span>Editorial, 2025</span></figcaption></figure>
+    <figure data-cat="documentary"><button class="ph" type="button"><img src="images/capture-documentary.jpg" width="819" height="1024" loading="lazy" decoding="async" alt="A woman shaping clay at a wooden table beside a large window in a ceramic workshop."></button><figcaption><b>The Clay Table</b><span>Documentary, 2025</span></figcaption></figure>
+    <figure data-cat="documentary"><button class="ph" type="button"><img src="images/work-quiet-ones.jpg" width="1024" height="637" loading="lazy" decoding="async" alt="A woman holding a paper cup on a station platform while commuters blur behind her."></button><figcaption><b>The Quiet Ones</b><span>Documentary, 2025</span></figcaption></figure>
+    <figure data-cat="portrait"><button class="ph" type="button"><img src="images/more-over-shoulder.jpg" width="825" height="1024" loading="lazy" decoding="async" alt="A woman looks back over her bare shoulder, lit by a window."></button><figcaption><b>Window light</b><span>Portrait, 2026</span></figcaption></figure>
+    <figure data-cat="space"><button class="ph" type="button"><img src="images/capture-spaces.jpg" width="819" height="1024" loading="lazy" decoding="async" alt="A small figure in a black coat stands beside a tall window next to a long concrete staircase."></button><figcaption><b>The Stair Hall</b><span>Architecture, 2026</span></figcaption></figure>
+    <figure data-cat="portrait"><button class="ph" type="button"><img src="images/more-laughing.jpg" width="825" height="1024" loading="lazy" decoding="async" alt="A woman with long dark curls laughs, head turned to the side, in a white shirt."></button><figcaption><b>Mid-laugh</b><span>Portrait, 2026</span></figcaption></figure>
+    <figure data-cat="space"><button class="ph" type="button"><img src="images/work-glass-house.jpg" width="1024" height="637" loading="lazy" decoding="async" alt="A small figure stands inside a glass house at dusk."></button><figcaption><b>Glass House</b><span>Architecture, 2025</span></figcaption></figure>
+    <figure data-cat="fashion"><button class="ph" type="button"><img src="images/more-walking-linen.jpg" width="825" height="1024" loading="lazy" decoding="async" alt="A woman in a black linen shirt walks along a sunlit white wall."></button><figcaption><b>White Wall</b><span>Fashion, 2026</span></figcaption></figure>
+    <figure data-cat="portrait"><button class="ph" type="button"><img src="images/more-beauty.jpg" width="576" height="1024" loading="lazy" decoding="async" alt="A close beauty portrait with burgundy nails, silver rings and a hoop earring."></button><figcaption><b>Burgundy</b><span>Beauty, 2026</span></figcaption></figure>
+  </div>
+
+  <section class="cta">
+    <p class="lead">Like what you see?</p>
+    <a class="big" href="index.html#contact">Book a shoot</a>
+  </section>
+</main>
+
+<footer>
+  <span>&copy; 2026 Quiet Aperture</span>
+  <span>Rua das Flores 18, Lisbon</span>
+</footer>
+
+<div class="viewer" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button type="button" class="close">Close</button>
+  <img alt="">
+  <p></p>
+</div>
+
+<script src="js/work.js"></script>
+</body>
+</html>

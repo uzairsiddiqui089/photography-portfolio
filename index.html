@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiet Aperture, portrait and fashion photography in Lisbon</title>
+<meta name="description" content="Quiet Aperture is a portrait and fashion photography studio in Lisbon. Natural light, small crew, hand retouching.">
+<meta name="theme-color" content="#fafaf8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27 fill=%27none%27 stroke=%27%230b0b0b%27 stroke-width=%272%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2713%27/%3E%3Cpath d=%27M16 3l6 10.4M29 16H17M22 28.4L16 18M10 28.4l6-10.4M3 16h12M10 3.6L16 14%27/%3E%3C/svg%3E">
+<script>
+  // Show the camera build-up only when motion is welcome. The page works without it.
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) document.documentElement.classList.add('is-loading');
+  })();
+</script>
+
+<!--
+  HOW TO CUSTOMIZE
+  1. Colors and fonts: change the variables in :root.
+  2. Text: edit anything in the HTML. No build step.
+  3. Photos: each ".shot" (Recent work) and ".subject-art" (What we capture) has a placeholder
+     gradient (classes s1 to s5). To use a real photo add:  style="background-image:url('images/your-photo.jpg')"
+  4. The 3D camera is built in code (search for "camera3d" in the script). It is a generic DSLR, no brand.
+     Colors and materials are in the "M" object, the shapes below it.
+  5. Animations use GSAP and Three.js, loaded from CDNs near the bottom. Check their licenses before selling.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== Loading screen. The 3D camera is drawn on the fixed canvas above it. ===== -->
+<div class="loader" role="status" aria-label="Loading Quiet Aperture">
+  <div class="ld-ui">
+    <span class="ld-label">Shaping the body</span>
+    <span class="ld-num">000</span>
+    <button class="ld-skip" type="button">Skip</button>
+  </div>
+</div>
+
+<canvas class="cam3d" aria-hidden="true"></canvas>
+
+<!-- ===== Viewfinder shown after the camera flies into the screen ===== -->
+<div class="vig" aria-hidden="true"></div>
+<div class="vf" aria-hidden="true">
+  <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+  <div class="tl"><span class="rec"></span><span>REC <span class="vf-tc">00:00:00:00</span></span></div>
+  <div class="tr">RAW &middot; <span class="vf-frame">0001</span></div>
+  <div class="reticle"></div>
+  <div class="bl"><span class="vf-f">f/1.8</span><span class="vf-s">1/250</span><span class="vf-i">ISO 400</span></div>
+  <div class="bc vf-label">Looking through the lens</div>
+  <div class="br">AF-S &middot; 24-70mm</div>
+</div>
+<div class="flash" aria-hidden="true"></div>
+
+<header class="site-header">
+  <a class="logo" href="#top" aria-label="Quiet Aperture, home">
+    <svg viewBox="0 0 32 32" fill="none" stroke="#0b0b0b" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M16 3l6 10.4M29 16H17M22 28.4L16 18M10 28.4l6-10.4M3 16h12M10 3.6L16 14"/></svg>
+    Quiet Aperture
+  </a>
+  <nav aria-label="Main">
+    <a href="#capture">Capture</a>
+    <a href="#work">Work</a>
+    <a href="#process">Process</a>
+    <a href="#contact">Contact</a>
+    <span class="booking">Booking from November</span>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ===== Hero ===== -->
+  <div class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Portrait and fashion studio, Lisbon</span>
+      <h1 id="headline">We photograph people who would rather not be photographed.</h1>
+    </div>
+    <div class="hero-foot">
+      <p>Natural light, a small crew and hand retouching.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#contact">Book a shoot</a>
+        <a class="btn ghost" href="#work">See the work</a>
+      </div>
+    </div>
+    <span class="scroll-hint" aria-hidden="true">Scroll to look through the lens</span>
+  </div>
+
+  <!-- ===== What we capture ===== -->
+  <section id="capture" class="capture" aria-labelledby="cap-h" data-vf="f/1.8|1/250|ISO 400|Portraits and fashion">
+    <div class="cap-head">
+      <div>
+        <h2 id="cap-h">What we capture</h2>
+        <p class="lead">Five kinds of pictures, one way of looking.</p>
+      </div>
+      <div class="cap-meta" aria-hidden="true"><span class="cap-count"><b>01</b> / 05</span><span class="cap-bar"><i></i></span></div>
+    </div>
+
+    <div class="subjects">
+      <article class="subject">
+        <div class="subject-copy"><span class="eyebrow">01</span><h3>Portraits</h3><p>The moment someone stops performing and simply looks back at you.</p></div>
+        <div class="subject-art s1" role="img" aria-label="A woman in a black top walking toward the camera along a sunlit white wall" style="background-image:url('images/capture-portraits.jpg')"></div>
+      </article>
+      <article class="subject">
+        <div class="subject-copy"><span class="eyebrow">02</span><h3>Fashion</h3><p>Clothes that move, in light that works with them instead of against them.</p></div>
+        <div class="subject-art s2" role="img" aria-label="A model in a long black silk coat caught mid-step against a concrete wall" style="background-image:url('images/capture-fashion.jpg')"></div>
+      </article>
+      <article class="subject">
+        <div class="subject-copy"><span class="eyebrow">03</span><h3>Editorial</h3><p>One frame that carries a whole story, made for the page it will sit on.</p></div>
+        <div class="subject-art s3" role="img" aria-label="A woman in a black blazer seated on a stool with a diagonal block of light behind her" style="background-image:url('images/capture-editorial.jpg')"></div>
+      </article>
+      <article class="subject">
+        <div class="subject-copy"><span class="eyebrow">04</span><h3>Documentary</h3><p>People as they are when nobody is asking them to be anything else.</p></div>
+        <div class="subject-art s4" role="img" aria-label="A woman shaping clay by a large window in a ceramic workshop" style="background-image:url('images/capture-documentary.jpg')"></div>
+      </article>
+      <article class="subject">
+        <div class="subject-copy"><span class="eyebrow">05</span><h3>Spaces</h3><p>Rooms and buildings photographed so you can feel who lives and works in them.</p></div>
+        <div class="subject-art s5" role="img" aria-label="A small figure in a black coat beside a tall window and a long concrete staircase" style="background-image:url('images/capture-spaces.jpg')"></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== Work ===== -->
+  <section id="work" class="work" aria-labelledby="work-h" data-vf="f/2.8|1/125|ISO 800|Recent work">
+    <div class="work-head">
+      <div>
+        <h2 id="work-h">Recent work</h2>
+        <p class="lead">Five projects from the last year. Scroll sideways. <a href="work.html">See all work</a></p>
+      </div>
+      <div class="counter" aria-hidden="true">frame <b>01</b> of 05</div>
+    </div>
+
+    <div class="track" aria-label="Recent work gallery">
+      <article class="panel">
+        <div class="shot s1" role="img" aria-label="A woman with a sheer black veil over the lower half of her face" style="background-image:url('images/work-mask-series.jpg')"><div class="vf-meta"><span>f/1.8</span><span>1/250</span><span>ISO 400</span></div></div>
+        <div class="cap"><h3>Mask Series</h3><span>Portrait, 2026</span></div>
+      </article>
+      <article class="panel">
+        <div class="shot s2" role="img" aria-label="A woman in a black jacket seated on a leather bench in a dark studio" style="background-image:url('images/work-after-hours.jpg')"><div class="vf-meta"><span>f/2.8</span><span>1/125</span><span>ISO 800</span></div></div>
+        <div class="cap"><h3>After Hours</h3><span>Fashion, 2026</span></div>
+      </article>
+      <article class="panel">
+        <div class="shot s3" role="img" aria-label="A woman in a pale silk dress leaning on a concrete wall beside her shadow" style="background-image:url('images/work-concrete-silk.jpg')"><div class="vf-meta"><span>f/4</span><span>1/500</span><span>ISO 200</span></div></div>
+        <div class="cap"><h3>Concrete and Silk</h3><span>Editorial, 2025</span></div>
+      </article>
+      <article class="panel">
+        <div class="shot s4" role="img" aria-label="A woman holding a paper cup on a station platform" style="background-image:url('images/work-quiet-ones.jpg')"><div class="vf-meta"><span>f/2</span><span>1/60</span><span>ISO 1600</span></div></div>
+        <div class="cap"><h3>The Quiet Ones</h3><span>Documentary, 2025</span></div>
+      </article>
+      <article class="panel">
+        <div class="shot s5" role="img" aria-label="A small figure standing inside a glass house at dusk" style="background-image:url('images/work-glass-house.jpg')"><div class="vf-meta"><span>f/8</span><span>1/250</span><span>ISO 100</span></div></div>
+        <div class="cap"><h3>Glass House</h3><span>Architecture, 2025</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== A different level ===== -->
+  <section id="level" class="level" aria-labelledby="level-h" data-vf="f/4|1/500|ISO 200|One level up">
+    <div class="lv-intro" aria-hidden="true">
+      <span class="eyebrow">Where most photography stops</span>
+      <p>Sharp. Well lit. Correctly exposed.</p>
+    </div>
+    <div class="lv-bg">
+      <h2 id="level-h" class="lv-head">Then we go <em>one level up.</em></h2>
+      <div class="levels">
+        <div class="lv-item"><span class="lv-num">Level 01</span><h3>Seen</h3><p>The technical basics, done properly. Focus, light and colour you never have to think about.</p></div>
+        <div class="lv-item"><span class="lv-num">Level 02</span><h3>Felt</h3><p>Direction and timing, so the person in the frame is actually present and the picture says so.</p></div>
+        <div class="lv-item"><span class="lv-num">Level 03</span><h3>Remembered</h3><p>A set with a point of view, retouched by hand, that still holds up ten years from now.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Process ===== -->
+  <section id="process" class="process" aria-labelledby="process-h" data-vf="f/5.6|1/250|ISO 100|How a shoot works">
+    <div class="process-head">
+      <h2 id="process-h">How a shoot works</h2>
+      <p class="lead">Five steps, no surprises. You always know what happens next.</p>
+    </div>
+    <div class="steps-wrap">
+      <span class="fill" aria-hidden="true"></span>
+      <ol class="steps">
+        <li class="step"><h3>Brief</h3><p>We talk about the look you want, where the photos will be used and who will be in front of the camera.</p></li>
+        <li class="step"><h3>Shoot</h3><p>A half or full day. Natural light first, flash only when the picture needs it.</p></li>
+        <li class="step"><h3>Select</h3><p>You get a private gallery within 48 hours and pick your favourites.</p></li>
+        <li class="step"><h3>Retouch</h3><p>Every chosen photo is retouched by hand, so people still look like themselves.</p></li>
+        <li class="step"><h3>Deliver</h3><p>Final files within a week, ready for print and web.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
+  <section id="contact" class="contact" aria-labelledby="contact-h" data-vf="f/8|1/250|ISO 100|Say hello">
+    <h2 id="contact-h">Tell us who you want to photograph.</h2>
+    <p class="lead">Send a few lines about the idea, the date and where the photos will be used. We reply within two working days.</p>
+    <a class="big" href="mailto:hello@quietaperture.studio">hello@quietaperture.studio</a>
+    <div class="links">
+      <a href="#">Instagram</a>
+      <a href="#">Behance</a>
+      <a href="#">Newsletter</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>&copy; 2026 Quiet Aperture</span>
+  <span><a href="work.html">All work</a> &middot; Rua das Flores 18, Lisbon</span>
+</footer>
+
+<!-- Animation libraries, loaded from CDNs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+:root {
+  --bg: #fafaf8;
+  --bg2: #ecece9;
+  --dark: #0b0b0b;
+  --ink: #0b0b0b;
+  --muted: #6b6b67;
+  --line: rgba(11, 11, 11, 0.2);
+
+  --display: "Fraunces", Georgia, "Times New Roman", serif;
+  --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
+
+  --pad: clamp(1.25rem, 4vw, 3.5rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+html.is-loading, html.is-loading body { overflow: hidden; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+
+.eyebrow { font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+
+/* ---------- The 3D camera (one fixed canvas for the whole journey) ---------- */
+.cam3d { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
+html.is-loading .cam3d { z-index: 101; }
+
+/* ---------- Loader: the camera builds itself piece by piece ---------- */
+.loader { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: none; }
+html.is-loading .loader { display: block; }
+.ld-ui { position: absolute; left: 50%; bottom: 11vh; transform: translateX(-50%); width: min(88vw, 520px); display: flex; justify-content: space-between; align-items: center; gap: 1rem; font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.ld-num { font-variant-numeric: tabular-nums; color: var(--ink); }
+.ld-skip { background: none; border: 0; color: var(--muted); font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; padding: 0.4rem 0; border-bottom: 1px solid var(--line); }
+.ld-skip:hover { color: var(--ink); }
+
+/* ---------- Header ---------- */
+.site-header {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 35;
+  display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
+  padding: 1.25rem var(--pad);
+}
+.logo {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  font-family: var(--display); font-weight: 600; font-size: 1.15rem;
+  text-decoration: none;
+}
+.logo svg { width: 1.6rem; height: 1.6rem; }
+.site-header nav { display: flex; gap: 1.75rem; align-items: center; }
+.site-header nav a { text-decoration: none; color: var(--muted); font-weight: 500; }
+.site-header nav a:hover { color: var(--ink); }
+.booking { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ink); font-size: 0.95rem; }
+.booking::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--ink); }
+
+/* ---------- Buttons ---------- */
+.btn { display: inline-block; padding: 0.95rem 1.9rem; font-weight: 700; text-decoration: none; border-radius: 999px; }
+.btn.primary { background: var(--ink); color: var(--bg); }
+.btn.primary:hover { background: #3a3a38; }
+.btn.ghost { box-shadow: inset 0 0 0 1px var(--line); }
+.btn.ghost:hover { background: rgba(11, 11, 11, 0.06); }
+
+/* ---------- Hero: text above and below, the camera sits in the middle ---------- */
+.hero {
+  position: relative; z-index: 2; background: var(--bg);
+  height: 100vh; height: 100svh; min-height: 560px;
+  display: grid; grid-template-columns: minmax(0, 29%) minmax(0, 1fr) minmax(0, 24%); align-items: center;
+  padding: 5.5rem var(--pad) clamp(1.5rem, 4vh, 3rem);
+}
+.hero-copy { grid-column: 1; text-align: left; }
+.hero h1 {
+  margin: 0.8rem 0 0;
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(1.8rem, 3vw, 3.2rem);
+  line-height: 1.06; letter-spacing: -0.02em;
+}
+.wm { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.16em; margin-bottom: -0.16em; }
+.w { display: inline-block; }
+.hero-foot { grid-column: 3; display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 1.5rem; }
+.hero-foot p { max-width: 26ch; color: var(--muted); margin: 0; }
+.hero-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 1rem; }
+.scroll-hint { position: absolute; left: 50%; bottom: 1.1rem; transform: translateX(-50%); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- Viewfinder: you are looking through the lens after the camera flies in ---------- */
+.vf { position: fixed; inset: 0; z-index: 40; pointer-events: none; color: #fff; mix-blend-mode: difference; opacity: 0; visibility: hidden; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.vf .corner { position: absolute; width: 34px; height: 34px; border: 2px solid #fff; }
+.vf .c1 { left: 1.1rem; top: 1.1rem; border-right: 0; border-bottom: 0; }
+.vf .c2 { right: 1.1rem; top: 1.1rem; border-left: 0; border-bottom: 0; }
+.vf .c3 { left: 1.1rem; bottom: 1.1rem; border-right: 0; border-top: 0; }
+.vf .c4 { right: 1.1rem; bottom: 1.1rem; border-left: 0; border-top: 0; }
+.vf .tl { position: absolute; left: 3.2rem; top: 1.25rem; display: flex; align-items: center; gap: 0.7rem; }
+.vf .rec { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: #fff; animation: rec 1.4s steps(1) infinite; }
+@keyframes rec { 50% { opacity: 0.2; } }
+.vf .tr { position: absolute; right: 3.2rem; top: 1.25rem; }
+.vf .bl { position: absolute; left: 3.2rem; bottom: 1.25rem; display: flex; gap: 1.1rem; }
+.vf .br { position: absolute; right: 3.2rem; bottom: 1.25rem; }
+.vf .bc { position: absolute; left: 50%; bottom: 1.25rem; transform: translateX(-50%); white-space: nowrap; }
+.vf .reticle { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border: 1px solid rgba(255, 255, 255, 0.85); }
+.vf .reticle::before, .vf .reticle::after { content: ""; position: absolute; background: #fff; }
+.vf .reticle::before { left: 50%; top: -8px; bottom: -8px; width: 1px; opacity: 0.5; }
+.vf .reticle::after { top: 50%; left: -8px; right: -8px; height: 1px; opacity: 0.5; }
+.vf.pulse .reticle { animation: af 0.7s ease-out; }
+@keyframes af { 0% { scale: 1.7; opacity: 0.2; } 100% { scale: 1; opacity: 1; } }
+.vig { position: fixed; inset: 0; z-index: 39; pointer-events: none; opacity: 0; visibility: hidden; background: radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 0, 0.16) 100%); }
+.flash { position: fixed; inset: 0; z-index: 60; pointer-events: none; background: #fff; opacity: 0; }
+
+/* viewfinder corners, shared by gallery shots and subjects */
+.shot::before, .subject-art::before {
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / var(--k) 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 0 / 2px var(--k) no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 0 / var(--k) 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 0 / 2px var(--k) no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 100% / var(--k) 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 100% / 2px var(--k) no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / var(--k) 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 2px var(--k) no-repeat;
+}
+
+/* ---------- Sections ---------- */
+section { padding: clamp(4rem, 9vw, 7rem) 0 0; }
+h2 { margin: 0 0 1rem; font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.08; letter-spacing: -0.02em; }
+.lead { color: var(--muted); max-width: 42ch; margin: 0; }
+
+/* ---------- What we capture ---------- */
+.capture { padding: clamp(4rem, 9vw, 7rem) var(--pad) 0; }
+.cap-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; margin-bottom: 2.5rem; }
+.cap-meta { display: none; flex-direction: column; align-items: flex-end; gap: 0.7rem; font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cap-meta b { color: var(--ink); font-weight: 500; }
+.cap-bar { width: 9rem; height: 2px; background: var(--line); }
+.cap-bar i { display: block; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; }
+
+.subjects { display: block; }
+.subject { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; margin-bottom: clamp(3rem, 7vw, 5rem); }
+.subject-copy h3 { margin: 0.6rem 0 1rem; font-family: var(--display); font-weight: 400; font-size: clamp(2.6rem, 6.5vw, 6rem); line-height: 1; letter-spacing: -0.03em; }
+.subject-copy p { margin: 0; color: var(--muted); max-width: 34ch; font-size: 1.15rem; }
+.subject-art { --c: rgba(255, 255, 255, 0.8); --k: 26px; position: relative; aspect-ratio: 4 / 5; width: min(100%, 49.6vh); justify-self: end; background: var(--art); background-size: cover; background-position: center 20%; overflow: hidden; }
+.subject-art::before { content: ""; position: absolute; inset: 1.2rem; z-index: 1; }
+
+.capture.after-hero { position: relative; z-index: 1; margin-top: -100vh; margin-top: -100svh; }   /* sits right under the hero, so the zoom lands on it */
+.capture.pinned { height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-top: 0; overflow: hidden; }
+.capture.pinned .cap-head { margin-bottom: 1.5rem; }
+.capture.pinned .cap-meta { display: flex; }
+.capture.pinned .subjects { display: grid; }
+.capture.pinned .subject { grid-area: 1 / 1; margin-bottom: 0; }
+.capture.pinned .subject-art { max-height: 56vh; width: auto; height: 56vh; }
+
+/* ---------- Work (horizontal gallery) ---------- */
+.work { --h: clamp(18rem, 54vh, 36rem); background: var(--bg2); padding-bottom: clamp(3rem, 6vw, 5rem); margin-top: clamp(4rem, 9vw, 7rem); padding-top: clamp(3rem, 6vw, 5rem); }
+.work-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; padding: 0 var(--pad) 2rem; }
+.counter { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.counter b { color: var(--ink); font-weight: 500; }
+.track { display: flex; gap: clamp(1rem, 2.5vw, 2rem); padding: 0 var(--pad); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+.panel { flex: 0 0 min(calc(var(--h) * 1.6), 85vw); scroll-snap-align: start; }
+.work.pinned { height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-top: 0; padding-bottom: 0; overflow: hidden; }
+.work.pinned .track { overflow: visible; scroll-snap-type: none; width: max-content; }
+.work.pinned .panel { scroll-snap-align: none; }
+
+.shot { --c: rgba(255, 255, 255, 0.8); --k: 26px; position: relative; height: var(--h); overflow: hidden; background: var(--art); background-size: cover; background-position: center; }
+.shot::before { content: ""; position: absolute; inset: 1rem; z-index: 1; transition: inset 0.3s; }
+.panel:hover .shot::before { inset: 1.6rem; }
+.shot::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, transparent calc(33.33% - 0.5px), rgba(255,255,255,0.14) calc(33.33% - 0.5px) calc(33.33% + 0.5px), transparent calc(33.33% + 0.5px)),
+    linear-gradient(90deg, transparent calc(66.66% - 0.5px), rgba(255,255,255,0.14) calc(66.66% - 0.5px) calc(66.66% + 0.5px), transparent calc(66.66% + 0.5px)),
+    linear-gradient(transparent calc(33.33% - 0.5px), rgba(255,255,255,0.14) calc(33.33% - 0.5px) calc(33.33% + 0.5px), transparent calc(33.33% + 0.5px)),
+    linear-gradient(transparent calc(66.66% - 0.5px), rgba(255,255,255,0.14) calc(66.66% - 0.5px) calc(66.66% + 0.5px), transparent calc(66.66% + 0.5px));
+  pointer-events: none;
+}
+.vf-meta { position: absolute; z-index: 2; left: 1.6rem; bottom: 1.6rem; display: flex; gap: 0.9rem; font-size: 0.78rem; letter-spacing: 0.06em; padding: 0.3rem 0.65rem; background: rgba(11, 11, 11, 0.75); color: #f4f4f2; }
+
+/* placeholder "photos" in black and white (replace with real images) */
+.s1 { --art: radial-gradient(circle at 68% 34%, rgba(255,255,255,0.85), transparent 34%), radial-gradient(circle at 30% 80%, rgba(255,255,255,0.18), transparent 40%), linear-gradient(155deg, #151515, #4a4a4a 55%, #0a0a0a); }
+.s2 { --art: radial-gradient(circle at 25% 30%, rgba(255,255,255,0.7), transparent 38%), radial-gradient(circle at 80% 85%, rgba(255,255,255,0.2), transparent 40%), linear-gradient(200deg, #1c1c1c, #6a6a6a 50%, #0c0c0c); }
+.s3 { --art: radial-gradient(circle at 75% 25%, rgba(255,255,255,0.7), transparent 30%), linear-gradient(110deg, #e4e4e2, #a4a4a2 50%, #505050); }
+.s4 { --art: radial-gradient(circle at 50% 60%, rgba(255,255,255,0.4), transparent 45%), linear-gradient(180deg, #111, #3a3a3a 60%, #080808); }
+.s5 { --art: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 2px, transparent 2px 90px), linear-gradient(170deg, #d6d6d4, #8a8a8a 45%, #222); }
+
+.cap { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-top: 1rem; }
+.cap h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.5rem; }
+.cap span { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.04em; }
+
+/* ---------- A different level ---------- */
+.level { background: var(--dark); color: #f4f4f2; margin-top: clamp(4rem, 9vw, 7rem); padding: clamp(4rem, 9vw, 7rem) var(--pad); }
+.level .lv-intro { display: none; }
+.lv-head { margin: 0 0 clamp(2rem, 5vw, 4rem); font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 6vw, 5.5rem); line-height: 1.02; letter-spacing: -0.03em; max-width: 14ch; }
+.lv-head em { font-style: italic; }
+.levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.25rem, 3vw, 3rem); }
+.lv-item { border-top: 1px solid rgba(244, 244, 242, 0.35); padding-top: 1.1rem; }
+.lv-num { font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase; color: #9b9b97; font-weight: 500; }
+.lv-item h3 { margin: 0.5rem 0 0.6rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.05; }
+.lv-item p { margin: 0; color: #c9c9c5; max-width: 30ch; }
+
+.level.pinned { position: relative; height: 100vh; height: 100svh; padding: 0; background: var(--bg); color: var(--ink); overflow: hidden; }
+.level.pinned .lv-intro { display: block; position: absolute; left: 0; right: 0; top: 11vh; text-align: center; padding: 0 var(--pad); }
+.lv-intro p { margin: 0 auto; max-width: 24ch; font-family: var(--display); font-size: clamp(1.7rem, 3.6vw, 3.2rem); line-height: 1.1; letter-spacing: -0.02em; }
+.lv-intro .eyebrow { display: block; margin-bottom: 1rem; }
+.level.pinned .lv-bg { position: absolute; inset: 0; background: var(--dark); color: #f4f4f2; clip-path: inset(46% 34% 14% 34% round 6px); display: flex; flex-direction: column; justify-content: center; padding: 0 var(--pad); }
+.level.pinned .lv-head { margin-bottom: clamp(1.5rem, 4vh, 3rem); font-size: clamp(2.2rem, 5.4vw, 5rem); }
+
+/* ---------- Process ---------- */
+.process { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 6rem); padding: clamp(4rem, 9vw, 7rem) var(--pad) 0; }
+.process-head { position: sticky; top: 3rem; align-self: start; }
+.steps-wrap { position: relative; }
+.steps-wrap::before { content: ""; position: absolute; left: 0.5rem; top: 0.6rem; bottom: 0.6rem; width: 2px; background: var(--line); }
+.steps-wrap .fill { position: absolute; left: 0.5rem; top: 0.6rem; bottom: 0.6rem; width: 2px; background: var(--ink); transform-origin: top; }
+.steps { list-style: none; margin: 0; padding: 0 0 0 2.75rem; }
+.step { position: relative; padding-bottom: 2.75rem; }
+.step:last-child { padding-bottom: 0; }
+.step::before { content: ""; position: absolute; left: -2.75rem; top: 0.45rem; width: 1.1rem; height: 1.1rem; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); transition: background 0.3s; }
+.step.active::before { background: var(--ink); }
+.step h3 { margin: 0 0 0.4rem; font-family: var(--display); font-weight: 400; font-size: 1.8rem; }
+.step p { margin: 0; color: var(--muted); max-width: 46ch; }
+.js-anim .step { opacity: 0.55; transition: opacity 0.3s; }
+.js-anim .step.active { opacity: 1; }
+
+/* ---------- Contact ---------- */
+.contact { padding: clamp(5rem, 11vw, 9rem) var(--pad) 0; }
+.contact .big { display: inline-block; margin-top: 1.5rem; font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 5.6vw, 4.6rem); letter-spacing: -0.03em; line-height: 1.1; text-decoration: none; border-bottom: 0.06em solid var(--ink); overflow-wrap: anywhere; }
+.contact .big:hover { color: var(--muted); border-color: var(--muted); }
+.contact .links { display: flex; gap: 1.75rem; margin-top: 2rem; color: var(--muted); }
+.contact .links a:hover { color: var(--ink); }
+
+footer { margin-top: clamp(4rem, 9vw, 7rem); padding: 1.5rem var(--pad); border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; color: var(--muted); font-size: 0.95rem; }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 900px) {
+  .process { grid-template-columns: 1fr; }
+  .process-head { position: static; }
+  .site-header nav { gap: 1.1rem; }
+  .subject { grid-template-columns: 1fr; }
+  .subject-art { justify-self: center; width: min(100%, 56vh); }
+  .levels { grid-template-columns: 1fr; }
+  .hero { display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; }
+  .hero-foot { flex-direction: row; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; text-align: left; }
+  .hero-foot p { max-width: 24ch; }
+  .hero-actions { justify-content: flex-start; }
+  .scroll-hint { display: none; }
+  .vf .bl, .vf .br { display: none; }
+}
+@media (hover: none) { .vf .reticle { display: none; } }   /* no mouse, no autofocus box sitting on the text */
+@media (max-width: 640px) {
+  .booking { display: none; }
+  .btn { padding: 0.8rem 1.4rem; }
+  .cap-head, .work-head { flex-wrap: wrap; }
+  .contact .links { flex-wrap: wrap; gap: 1rem 1.5rem; }
+  .step h3 { font-size: 1.5rem; }
+}
+@media (max-width: 480px) {
+  .site-header nav a:nth-child(1), .site-header nav a:nth-child(3) { display: none; }
+  .hero { padding-top: 5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .shot::before { transition: none; }
+}
