@@ -27,12 +27,15 @@ HTML, CSS and JavaScript only, no build step.
 .
 |-- index.html        main page
 |-- work.html         all work, with filters
+|-- contact.html      booking form, contact details, FAQ
 |-- css/
 |   |-- style.css     main page styles
-|   `-- work.css      work page styles
+|   |-- work.css      shared base styles and the work page
+|   `-- contact.css   booking form styles
 |-- js/
 |   |-- main.js       camera, loader, scroll journey, sections
-|   `-- work.js       filters and photo viewer
+|   |-- work.js       filters and photo viewer
+|   `-- contact.js    booking form (validation, event fields, sending)
 `-- images/           photos (see the sizes below)
 ```
 
@@ -58,6 +61,15 @@ npx serve .
   - Use `.jpg` or `.webp` under about 250 KB each.
 - **Camera look:** the `M` object in `js/main.js` holds the materials and colours.
 - **Add a photo to the work page:** copy a `<figure>` block in `work.html` and change the file name, size, title and category.
+
+## Booking form
+
+The form on `contact.html` checks the fields, shows extra event fields when "Event coverage" is chosen, and has a hidden spam trap. A static site has no server, so there are two ways it sends:
+
+- **Default:** it opens the visitor's email app with the request filled in.
+- **Direct to your inbox:** create a free form at [Formspree](https://formspree.io) (or a similar service), then set `FORM_ENDPOINT` at the top of `js/contact.js` to its address.
+
+The Services section on the home page and the contact details (phone, address, hours, social links) are placeholders to edit.
 
 ## Image credits
 

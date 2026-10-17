@@ -102,8 +102,8 @@ function camera3d() {
   function drawSite() {
     relayout();
     var g = siteC.getContext('2d'), serif = 'Fraunces, Georgia, serif', sans = 'Manrope, Arial, sans-serif';
-    var VW = lay.VW, VH = lay.VH, pad = clampN(20, VW * 0.04, 56), INK = '#0b0b0b', MUTED = '#6b6b67';
-    function sec(i) { g.save(); g.fillStyle = '#fafaf8'; g.fillRect(0, i * SH, SW, SH); g.translate(lay.ox, i * SH + lay.oy); g.scale(lay.f, lay.f); g.beginPath(); g.rect(0, 0, VW, VH); g.clip(); }
+    var VW = lay.VW, VH = lay.VH, pad = clampN(20, VW * 0.04, 56), INK = '#0b0b0b', MUTED = '#3d3a35';
+    function sec(i) { g.save(); g.fillStyle = '#efe3c8'; g.fillRect(0, i * SH, SW, SH); g.translate(lay.ox, i * SH + lay.oy); g.scale(lay.f, lay.f); g.beginPath(); g.rect(0, 0, VW, VH); g.clip(); }
     function txt(s, x, y, font, color, align, ls) {
       g.font = font; g.fillStyle = color; g.textAlign = align || 'left';
       if ('letterSpacing' in g) g.letterSpacing = ls || '0px';
@@ -113,8 +113,8 @@ function camera3d() {
     function pill(cx, cy, label, filled) {   // right-aligned pill whose right edge is cx
       g.font = '700 17px ' + sans; var w = g.measureText(label).width + 61, h = 58, x = cx - w, y = cy - h / 2, r = h / 2;
       g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r);
-      if (filled) { g.fillStyle = INK; g.fill(); } else { g.strokeStyle = 'rgba(11,11,11,0.2)'; g.lineWidth = 1; g.stroke(); }
-      txt(label, x + w / 2, cy + 6, '700 17px ' + sans, filled ? '#fafaf8' : INK, 'center');
+      if (filled) { g.fillStyle = INK; g.fill(); } else { g.strokeStyle = 'rgba(11,11,11,0.25)'; g.lineWidth = 1; g.stroke(); }
+      txt(label, x + w / 2, cy + 6, '700 17px ' + sans, filled ? '#efe3c8' : INK, 'center');
     }
     function art(x, y, w, h) {   // the first photo on the page (or its gradient while it loads)
       if (artImg.complete && artImg.naturalWidth && !artBad) {
@@ -148,11 +148,11 @@ function camera3d() {
     txt('Process', VW - pad - 270, 42, '500 17px ' + sans, MUTED); txt('Contact', VW - pad - 190, 42, '500 17px ' + sans, MUTED);
     txt('Booking from November', VW - pad, 42, '500 15px ' + sans, INK, 'right');
     var fs = clampN(28.8, VW * 0.03, 51.2), lh = fs * 1.06, y0 = VH * 0.5 - lh * 0.9;
-    txt('PORTRAIT AND FASHION STUDIO, LISBON', pad, y0 - lh - 14, '500 12.5px ' + sans, MUTED, 'left', '2px');
+    txt('PORTRAIT AND FASHION STUDIO, LISBON', pad, y0 - lh - 14, '500 12.5px ' + sans, '#a8552a', 'left', '2px');
     ['We photograph', 'people who would', 'rather not be', 'photographed.'].forEach(function (s, i) { txt(s, pad, y0 + i * lh, '400 ' + fs + 'px ' + serif, INK, 'left', (-0.02 * fs) + 'px'); });
-    txt('Natural light, a small crew and', VW - pad, VH * 0.5 - 62, '400 17px ' + sans, MUTED, 'right');
-    txt('hand retouching.', VW - pad, VH * 0.5 - 34, '400 17px ' + sans, MUTED, 'right');
-    pill(VW - pad, VH * 0.5 + 34, 'Book a shoot', true); pill(VW - pad, VH * 0.5 + 108, 'See the work', false);
+    txt('Natural light, a small crew and', VW - pad, VH * 0.5 - 49, '400 17px ' + sans, MUTED, 'right');
+    txt('hand retouching.', VW - pad, VH * 0.5 - 21, '400 17px ' + sans, MUTED, 'right');
+    pill(VW - pad, VH * 0.5 + 40, 'See the work', false);
     g.restore();
 
     // page 1: what we capture, as it appears when the page is pinned
@@ -162,8 +162,8 @@ function camera3d() {
     txt('Five kinds of pictures, one way of looking.', pad, VH * 0.267, '400 17px ' + sans, MUTED);
     g.font = '500 14.4px ' + sans; var tail = ' / 05', tw = g.measureText(tail).width;
     txt(tail, VW - pad, VH * 0.247, '400 14.4px ' + sans, MUTED, 'right'); txt('01', VW - pad - tw, VH * 0.247, '500 14.4px ' + sans, INK, 'right');
-    g.fillStyle = 'rgba(11,11,11,0.2)'; g.fillRect(VW - pad - 144, VH * 0.278, 144, 2); g.fillStyle = INK; g.fillRect(VW - pad - 144, VH * 0.278, 28, 2);
-    txt('01', pad, VH * 0.468, '500 12.5px ' + sans, MUTED, 'left', '2px');
+    g.fillStyle = 'rgba(11,11,11,0.25)'; g.fillRect(VW - pad - 144, VH * 0.278, 144, 2); g.fillStyle = '#a8552a'; g.fillRect(VW - pad - 144, VH * 0.278, 28, 2);
+    txt('01', pad, VH * 0.468, '500 12.5px ' + sans, '#a8552a', 'left', '2px');
     var big = clampN(41.6, VW * 0.065, 96);
     txt('Portraits', pad, VH * 0.622, '400 ' + big + 'px ' + serif, INK, 'left', (-0.03 * big) + 'px');
     txt('The moment someone stops performing and', pad, VH * 0.703, '400 18.4px ' + sans, MUTED);
@@ -180,7 +180,7 @@ function camera3d() {
     sg.drawImage(siteC, 0, sy, SW, SH, 0, 0, SW, SH);
     var a = screenState.hud; if (a > 0.01) {   // viewfinder readouts, drawn in the same places as the real overlay
       if (!hudDom) hudDom = { tc: document.querySelector('.vf-tc'), fr: document.querySelector('.vf-frame'), f: document.querySelector('.vf-f'), s: document.querySelector('.vf-s'), i: document.querySelector('.vf-i'), l: document.querySelector('.vf-label') };
-      var VW = lay.VW, VH = lay.VH, ink = '#0b0b0b', font = '600 11.84px Manrope, Arial, sans-serif';
+      var VW = lay.VW, VH = lay.VH, ink = '#101c37', font = '600 11.84px Manrope, Arial, sans-serif';
       sg.save(); sg.translate(lay.ox, lay.oy); sg.scale(lay.f, lay.f); sg.globalAlpha = a; sg.strokeStyle = ink; sg.fillStyle = ink; sg.lineWidth = 2;
       [[17.6, 17.6, 1, 1], [VW - 17.6, 17.6, -1, 1], [17.6, VH - 17.6, 1, -1], [VW - 17.6, VH - 17.6, -1, -1]].forEach(function (c) {
         sg.beginPath(); sg.moveTo(c[0] + c[2] * 34, c[1]); sg.lineTo(c[0], c[1]); sg.lineTo(c[0], c[1] + c[3] * 34); sg.stroke();
@@ -583,11 +583,65 @@ mm.add({
   var vf = document.querySelector('.vf'), vig = document.querySelector('.vig');
   if (cam) {
     var jr = cam.journey;
+    // ----- the reel: two connected film strips that wind across the background like snakes while the camera turns -----
+    var reelEl = hero.querySelector('.reel');
+    var reel = (function () {
+      var photos = ['work-mask-series', 'capture-fashion', 'work-concrete-silk', 'capture-documentary', 'work-after-hours', 'capture-editorial', 'work-quiet-ones', 'more-laughing', 'work-glass-house', 'capture-portraits', 'more-over-shoulder', 'more-walking-linen'];
+      // each frame shows only a glimpse: zoomed in on a different part of its photo
+      var glimpse = ['50% 18%', '30% 30%', '68% 22%', '50% 55%', '40% 15%', '62% 40%', '35% 60%', '55% 28%'];
+      var strips = [], active = false, built = false, prog = 0, fw = 200, fh = 210, last = performance.now(), timer, builtW = 0;
+      function build() {
+        reelEl.textContent = ''; strips = [];
+        var W = window.innerWidth, small = W < 700, n = 0;
+        builtW = W;
+        fw = small ? Math.round(W * 0.22) : Math.round(Math.max(150, Math.min(250, W * 0.15))); fh = Math.round(fw * 1.08);
+        var step = fw * 0.96, per = Math.ceil((W + fw * 3) / step) + 1;
+        for (var s = 0; s < 2; s++) {
+          var strip = { dir: s ? 1 : -1, speed: s ? 58 : 76, off: s * 200, phase: s * Math.PI, y: s ? 0.7 : 0.32, step: step, frames: [] };
+          for (var i = 0; i < per; i++) {
+            var f = document.createElement('div'); f.className = 'fr'; f.style.width = fw + 'px'; f.style.height = fh + 'px';
+            f.style.padding = Math.round(fh * 0.13) + 'px 0';
+            var pos = glimpse[(n + i * 3) % glimpse.length];
+            var im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = 'images/' + photos[n++ % photos.length] + '.jpg';
+            im.style.objectPosition = pos; im.style.transformOrigin = pos;
+            var box = document.createElement('div'); box.className = 'ph'; box.appendChild(im); f.appendChild(box); reelEl.appendChild(f); strip.frames.push(f);
+          }
+          strip.total = per * step; strips.push(strip);
+        }
+        built = true;
+      }
+      function update() {
+        var now = performance.now(), dt = Math.min(0.1, (now - last) / 1000); last = now;
+        if (!active || !built || document.hidden) return;
+        var t = now / 1000, W = window.innerWidth, H = window.innerHeight;
+        var amp = H * (0.09 + 0.06 * prog), k = Math.PI * 2 / (W * 2), boost = 1 + prog * 1.4;
+        for (var s = 0; s < strips.length; s++) {
+          var st = strips[s], cy = st.y * H;
+          st.off += st.dir * st.speed * boost * dt;
+          for (var i = 0; i < st.frames.length; i++) {
+            var x = ((i * st.step + st.off) % st.total + st.total) % st.total - fw * 1.5;
+            var a = x * k + t * 0.8 + st.phase;
+            var y = cy + Math.sin(a) * amp, rot = Math.atan(Math.cos(a) * amp * k) * 180 / Math.PI;
+            st.frames[i].style.transform = 'translate3d(' + (x - fw / 2).toFixed(1) + 'px,' + (y - fh / 2).toFixed(1) + 'px,0) rotate(' + rot.toFixed(2) + 'deg)';
+          }
+        }
+      }
+      gsap.ticker.add(update);
+      var onResize = function () { if (window.innerWidth !== builtW) { clearTimeout(timer); timer = setTimeout(build, 250); } };
+      window.addEventListener('resize', onResize);
+      // load the photos a moment after the intro, so they never compete with it
+      var start = function () { setTimeout(function () { if (!built) build(); }, 500); };
+      if (window.siteReady) start(); else document.addEventListener('site:ready', start, { once: true });
+      cleanups.push(function () { gsap.ticker.remove(update); window.removeEventListener('resize', onResize); document.removeEventListener('site:ready', start); reelEl.textContent = ''; built = false; });
+      return { set: function (p) { prog = p; active = p > 0.02 && p < 0.93; } };
+    })();
     gsap.timeline({
       defaults: { ease: 'none' },
-      scrollTrigger: { trigger: hero, start: 'top top', end: '+=330%', pin: true, scrub: 0.7, invalidateOnRefresh: true }
+      scrollTrigger: { trigger: hero, start: 'top top', end: '+=330%', pin: true, scrub: 0.7, invalidateOnRefresh: true, onUpdate: function (self) { reel.set(self.progress); } }
     })
       .fromTo('.hero-copy, .hero-foot, .scroll-hint', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -40, duration: 0.16, immediateRender: false }, 0)
+      .to('.reel', { autoAlpha: 0.95, duration: 0.14 }, 0.05)                       // photos start to drift in as the words fade
+      .to('.reel', { autoAlpha: 0, duration: 0.1 }, 0.8)                             // and leave before the screen takes over
       .to(cam.mouse, { k: 0, duration: 0.2 }, 0)
       .to(cam.screen, { p: 1, duration: 0.5, ease: "none" }, 0.2)                    // the rear screen scrolls from the hero down to the first section
       .to(jr.rotation, { y: -1.45, duration: 0.3, ease: "power2.inOut" }, 0.02)       // turns to the side of the screen
@@ -602,7 +656,7 @@ mm.add({
       .to(".flash", { opacity: 0.25, duration: 0.02 }, 0.955)
       .to(".flash", { opacity: 0, duration: 0.03 }, 0.975)
       .to(".cam3d", { autoAlpha: 0, duration: 0.03 }, 0.97)                            // the zoomed screen dissolves into the real page, same layout
-      .fromTo(".hero", { backgroundColor: "rgba(250,250,248,1)" }, { backgroundColor: "rgba(250,250,248,0)", duration: 0.03, immediateRender: false }, 0.97);
+      .fromTo(".hero", { backgroundColor: "rgba(239,227,200,1)" }, { backgroundColor: "rgba(239,227,200,0)", duration: 0.03, immediateRender: false }, 0.97);
 
     // viewfinder readouts follow the page: timecode from scroll, exposure from the section on screen
     // the bottom row of the viewfinder steps aside when the footer arrives, so the two never overlap
@@ -676,7 +730,7 @@ mm.add({
   if (pin) {
     var track = work.querySelector('.track');
     var counter = work.querySelector('.counter b');
-    var n = work.querySelectorAll('.panel').length;
+    var n = work.querySelectorAll('.panel:not(.panel-cta)').length;
     work.classList.add('pinned');
     track.removeAttribute('tabindex'); track.removeAttribute('role');
     var dist = function () { return Math.max(0, track.scrollWidth - window.innerWidth + 1); };
@@ -710,14 +764,10 @@ mm.add({
     cleanups.push(function () { level.classList.remove('pinned'); });
   }
 
-  // ===== Scroll: process line fills and steps light up =====
-  var proc = document.querySelector('.process');
-  proc.classList.add('js-anim');
-  gsap.fromTo('.steps-wrap .fill', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.steps', start: 'top 70%', end: 'bottom 60%', scrub: true } });
-  document.querySelectorAll('.step').forEach(function (st) {
-    ScrollTrigger.create({ trigger: st, start: 'top 65%', end: 'bottom 65%', toggleClass: { targets: st, className: 'active' } });
+  // ===== Scroll: the picture cards and tiles rise in one after another =====
+  ['.proc-tiles .tile', '.svc-grid .svc'].forEach(function (sel) {
+    gsap.from(sel, { y: 50, autoAlpha: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1, scrollTrigger: { trigger: sel.split(' ')[0], start: 'top 82%', once: true } });
   });
-  cleanups.push(function () { proc.classList.remove('js-anim'); });
 
   return function () { cleanups.forEach(function (fn) { fn(); }); };
 });

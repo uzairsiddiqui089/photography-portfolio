@@ -1,8 +1,11 @@
 :root {
-  --bg: #fafaf8;
+  --bg: #efe3c8;
   --ink: #0b0b0b;
-  --muted: #6b6b67;
-  --line: rgba(11, 11, 11, 0.2);
+  --muted: #3d3a35;
+  --line: rgba(11, 11, 11, 0.25);
+  --paper-hi: #fbf6ea;
+  --accent: #a8552a;
+  --brass: #b89a5e;
   --display: "Fraunces", Georgia, "Times New Roman", serif;
   --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
   --pad: clamp(1.25rem, 4vw, 3.5rem);
@@ -10,14 +13,14 @@
 *, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.0625rem; line-height: 1.65; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
-:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 
 header { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding: 1.25rem var(--pad); }
 .logo { display: inline-flex; align-items: center; gap: 0.7rem; font-family: var(--display); font-weight: 600; font-size: 1.15rem; text-decoration: none; }
 .logo svg { width: 1.6rem; height: 1.6rem; }
 nav { display: flex; gap: 1.75rem; }
 nav a { text-decoration: none; color: var(--muted); font-weight: 500; }
-nav a:hover, nav a[aria-current] { color: var(--ink); }
+nav a:hover, nav a[aria-current] { color: var(--accent); }
 
 .intro { padding: clamp(2.5rem, 7vw, 5rem) var(--pad) 1.5rem; }
 h1 { margin: 0 0 1rem; font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 6vw, 5.5rem); line-height: 1.02; letter-spacing: -0.03em; }
@@ -31,7 +34,7 @@ h1 { margin: 0 0 1rem; font-family: var(--display); font-weight: 400; font-size:
 .grid { columns: 3 320px; column-gap: clamp(0.8rem, 2vw, 1.5rem); padding: 0 var(--pad); }
 figure { margin: 0 0 clamp(0.8rem, 2vw, 1.5rem); break-inside: avoid; }
 figure[hidden] { display: none; }
-.ph { display: block; width: 100%; padding: 0; border: 0; background: #e6e6e3; cursor: zoom-in; position: relative; overflow: hidden; }
+.ph { display: block; width: 100%; padding: 0; border: 0; background: #dccdae; cursor: zoom-in; position: relative; overflow: hidden; }
 .ph img { display: block; width: 100%; height: auto; transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .ph:hover img { transform: scale(1.03); }
 figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-top: 0.6rem; }
@@ -40,11 +43,11 @@ figcaption span { font-size: 0.82rem; color: var(--muted); letter-spacing: 0.04e
 
 .cta { padding: clamp(3rem, 8vw, 6rem) var(--pad) 0; }
 .cta a.big { display: inline-block; margin-top: 1rem; font-family: var(--display); font-size: clamp(1.6rem, 5vw, 4rem); letter-spacing: -0.03em; line-height: 1.1; text-decoration: none; border-bottom: 0.06em solid var(--ink); overflow-wrap: anywhere; }
-.cta a.big:hover { color: var(--muted); border-color: var(--muted); }
+.cta a.big:hover { color: var(--accent); border-color: var(--accent); }
 footer { margin-top: clamp(3rem, 8vw, 6rem); padding: 1.5rem var(--pad); border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; color: var(--muted); font-size: 0.95rem; }
 
 /* full-size viewer */
-.viewer { position: fixed; inset: 0; z-index: 50; background: rgba(250, 250, 248, 0.97); display: none; align-items: center; justify-content: center; padding: 3.5rem 1rem 1rem; }
+.viewer { position: fixed; inset: 0; z-index: 50; background: rgba(239, 227, 200, 0.97); display: none; align-items: center; justify-content: center; padding: 3.5rem 1rem 1rem; }
 .viewer.open { display: flex; }
 .viewer img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
 .viewer p { position: absolute; left: var(--pad); bottom: 1rem; margin: 0; font-size: 0.9rem; color: var(--muted); }
@@ -52,3 +55,10 @@ footer { margin-top: clamp(3rem, 8vw, 6rem); padding: 1.5rem var(--pad); border-
 
 @media (max-width: 640px) { nav { gap: 1.1rem; } .grid { columns: 1; } }
 @media (prefers-reduced-motion: reduce) { .ph img { transition: none; } }
+
+/* pictures pop up when you point at them */
+figure { transition: scale 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s; }
+@media (hover: hover) {
+  figure:hover { scale: 1.05; position: relative; z-index: 5; }
+  figure:hover .ph { box-shadow: 0 22px 44px rgba(11, 11, 11, 0.35); }
+}

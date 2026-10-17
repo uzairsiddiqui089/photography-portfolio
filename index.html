@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quiet Aperture, portrait and fashion photography in Lisbon</title>
 <meta name="description" content="Quiet Aperture is a portrait and fashion photography studio in Lisbon. Natural light, small crew, hand retouching.">
-<meta name="theme-color" content="#fafaf8">
+<meta name="theme-color" content="#efe3c8">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27 fill=%27none%27 stroke=%27%230b0b0b%27 stroke-width=%272%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2713%27/%3E%3Cpath d=%27M16 3l6 10.4M29 16H17M22 28.4L16 18M10 28.4l6-10.4M3 16h12M10 3.6L16 14%27/%3E%3C/svg%3E">
 <script>
   // Show the camera build-up only when motion is welcome. The page works without it.
@@ -66,9 +66,10 @@
   <nav aria-label="Main">
     <a href="#capture">Capture</a>
     <a href="#work">Work</a>
+    <a href="#services">Services</a>
     <a href="#process">Process</a>
     <a href="#contact">Contact</a>
-    <span class="booking">Booking from November</span>
+    <a class="nav-cta" href="contact.html#book">Book a shoot</a>
   </nav>
 </header>
 
@@ -76,6 +77,7 @@
 
   <!-- ===== Hero ===== -->
   <div class="hero">
+    <div class="reel" aria-hidden="true"></div>
     <div class="hero-copy">
       <span class="eyebrow">Portrait and fashion studio, Lisbon</span>
       <h1 id="headline">We photograph people who would rather not be photographed.</h1>
@@ -83,7 +85,6 @@
     <div class="hero-foot">
       <p>Natural light, a small crew and hand retouching.</p>
       <div class="hero-actions">
-        <a class="btn primary" href="#contact">Book a shoot</a>
         <a class="btn ghost" href="#work">See the work</a>
       </div>
     </div>
@@ -129,9 +130,12 @@
     <div class="work-head">
       <div>
         <h2 id="work-h">Recent work</h2>
-        <p class="lead">Five projects from the last year. Scroll sideways. <a href="work.html">See all work</a></p>
+        <p class="lead">Five projects from the last year. Scroll sideways.</p>
       </div>
-      <div class="counter" aria-hidden="true">frame <b>01</b> of 05</div>
+      <div class="work-side">
+        <a class="btn primary" href="work.html">View full portfolio</a>
+        <div class="counter" aria-hidden="true">frame <b>01</b> of 05</div>
+      </div>
     </div>
 
     <div class="track" aria-label="Recent work gallery">
@@ -155,6 +159,13 @@
         <div class="shot s5" role="img" aria-label="A small figure standing inside a glass house at dusk" style="background-image:url('images/work-glass-house.jpg')"><div class="vf-meta"><span>f/8</span><span>1/250</span><span>ISO 100</span></div></div>
         <div class="cap"><h3>Glass House</h3><span>Architecture, 2025</span></div>
       </article>
+      <article class="panel panel-cta">
+        <a class="cta-card" href="work.html">
+          <span class="eyebrow">The full portfolio</span>
+          <span class="cta-big">See every project</span>
+          <span class="btn primary">View full portfolio</span>
+        </a>
+      </article>
     </div>
   </section>
 
@@ -174,29 +185,69 @@
     </div>
   </section>
 
+  <!-- ===== Services ===== -->
+  <!-- One picture, one line each. Change the photo with the image file name, and the line freely. Prices are quoted per project. -->
+  <section id="services" class="services" aria-labelledby="services-h" data-vf="f/2|1/200|ISO 320|What we offer">
+    <div class="services-head">
+      <h2 id="services-h">What we offer</h2>
+      <p class="lead">Every project is quoted to fit.</p>
+    </div>
+    <div class="svc-grid">
+      <a class="svc" href="contact.html?service=portrait#book">
+        <div class="svc-img" style="background-image:url('images/capture-portraits.jpg')"></div>
+        <div class="svc-body"><span class="svc-num">01</span><h3>Portraits</h3><p>Natural light, true to you.</p><span class="svc-go">Book &rarr;</span></div>
+      </a>
+      <a class="svc" href="contact.html?service=fashion#book">
+        <div class="svc-img" style="background-image:url('images/capture-fashion.jpg')"></div>
+        <div class="svc-body"><span class="svc-num">02</span><h3>Fashion</h3><p>Lookbooks and campaigns.</p><span class="svc-go">Book &rarr;</span></div>
+      </a>
+      <a class="svc" href="contact.html?service=editorial#book">
+        <div class="svc-img" style="background-image:url('images/capture-editorial.jpg')"></div>
+        <div class="svc-body"><span class="svc-num">03</span><h3>Editorial</h3><p>One idea, told in pictures.</p><span class="svc-go">Book &rarr;</span></div>
+      </a>
+      <a class="svc" href="contact.html?service=brand#book">
+        <div class="svc-img" style="background-image:url('images/more-walking-linen.jpg')"></div>
+        <div class="svc-body"><span class="svc-num">04</span><h3>Brand</h3><p>Team and product imagery.</p><span class="svc-go">Book &rarr;</span></div>
+      </a>
+      <a class="svc" href="contact.html?service=event#book">
+        <div class="svc-img" style="background-image:url('images/work-after-hours.jpg')"></div>
+        <div class="svc-body"><span class="svc-num">05</span><h3>Events</h3><p>Covered quietly, from 2 hours.</p><span class="svc-go">Book &rarr;</span></div>
+      </a>
+      <a class="svc" href="contact.html?service=retouch#book">
+        <div class="svc-img" style="background-image:url('images/more-beauty-color.jpg')"></div>
+        <div class="svc-body"><span class="svc-num">06</span><h3>Retouching</h3><p>Done by hand, lightly.</p><span class="svc-go">Ask &rarr;</span></div>
+      </a>
+    </div>
+  </section>
+
   <!-- ===== Process ===== -->
   <section id="process" class="process" aria-labelledby="process-h" data-vf="f/5.6|1/250|ISO 100|How a shoot works">
     <div class="process-head">
       <h2 id="process-h">How a shoot works</h2>
-      <p class="lead">Five steps, no surprises. You always know what happens next.</p>
+      <p class="lead">Five steps, no surprises.</p>
     </div>
-    <div class="steps-wrap">
-      <span class="fill" aria-hidden="true"></span>
-      <ol class="steps">
-        <li class="step"><h3>Brief</h3><p>We talk about the look you want, where the photos will be used and who will be in front of the camera.</p></li>
-        <li class="step"><h3>Shoot</h3><p>A half or full day. Natural light first, flash only when the picture needs it.</p></li>
-        <li class="step"><h3>Select</h3><p>You get a private gallery within 48 hours and pick your favourites.</p></li>
-        <li class="step"><h3>Retouch</h3><p>Every chosen photo is retouched by hand, so people still look like themselves.</p></li>
-        <li class="step"><h3>Deliver</h3><p>Final files within a week, ready for print and web.</p></li>
-      </ol>
-    </div>
+    <ol class="proc-tiles">
+      <li class="tile"><div class="tile-img" style="background-image:url('images/more-laughing.jpg')"></div><div class="tile-body"><span class="tile-num">01</span><h3>Brief</h3><p>Tell us the look.</p></div></li>
+      <li class="tile"><div class="tile-img" style="background-image:url('images/capture-fashion.jpg')"></div><div class="tile-body"><span class="tile-num">02</span><h3>Shoot</h3><p>Half or full day.</p></div></li>
+      <li class="tile"><div class="tile-img" style="background-image:url('images/capture-editorial.jpg')"></div><div class="tile-body"><span class="tile-num">03</span><h3>Select</h3><p>Pick within 48 hours.</p></div></li>
+      <li class="tile"><div class="tile-img" style="background-image:url('images/more-beauty-color.jpg')"></div><div class="tile-body"><span class="tile-num">04</span><h3>Retouch</h3><p>Done by hand.</p></div></li>
+      <li class="tile"><div class="tile-img" style="background-image:url('images/capture-portraits.jpg')"></div><div class="tile-body"><span class="tile-num">05</span><h3>Deliver</h3><p>Files in a week.</p></div></li>
+    </ol>
   </section>
 
   <!-- ===== Contact ===== -->
   <section id="contact" class="contact" aria-labelledby="contact-h" data-vf="f/8|1/250|ISO 100|Say hello">
     <h2 id="contact-h">Tell us who you want to photograph.</h2>
     <p class="lead">Send a few lines about the idea, the date and where the photos will be used. We reply within two working days.</p>
-    <a class="big" href="mailto:hello@quietaperture.studio">hello@quietaperture.studio</a>
+    <div class="contact-actions">
+      <a class="btn primary" href="contact.html#book">Request a booking</a>
+      <a class="btn ghost" href="mailto:hello@quietaperture.studio">Email us</a>
+    </div>
+    <dl class="contact-meta">
+      <div><dt>Studio</dt><dd>Rua das Flores 18, Lisbon</dd></div>
+      <div><dt>Hours</dt><dd>Monday to Friday, 10:00 to 18:00</dd></div>
+      <div><dt>Reply time</dt><dd>Within two working days</dd></div>
+    </dl>
     <div class="links">
       <a href="#">Instagram</a>
       <a href="#">Behance</a>
@@ -207,7 +258,7 @@
 
 <footer>
   <span>&copy; 2026 Quiet Aperture</span>
-  <span><a href="work.html">All work</a> &middot; Rua das Flores 18, Lisbon</span>
+  <span><a href="work.html">All work</a> &middot; <a href="contact.html">Contact</a> &middot; Rua das Flores 18, Lisbon</span>
 </footer>
 
 <!-- Animation libraries, loaded from CDNs -->
