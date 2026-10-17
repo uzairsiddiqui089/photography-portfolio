@@ -95,9 +95,10 @@ function camera3d() {
     lay.ox = (SW - lay.rw) / 2; lay.oy = (SH - lay.rh) / 2; lay.f = lay.rw / VW;
   }
   function clampN(a, v, b) { return Math.max(a, Math.min(b, v)); }
-  var artImg = new Image(), artBad = false;   // the real first photo, shown on the screen too
+  // The real first photo is shown on the screen too, but only when served over http(s). On a file:// page the browser treats the image as foreign and locks the whole screen texture, so we skip it there.
+  var artImg = new Image(), artBad = window.location.protocol === 'file:';
   artImg.onload = function () { redrawSite(); };
-  artImg.src = 'images/capture-portraits.jpg';
+  if (!artBad) artImg.src = 'images/capture-portraits.jpg';
   function drawSite() {
     relayout();
     var g = siteC.getContext('2d'), serif = 'Fraunces, Georgia, serif', sans = 'Manrope, Arial, sans-serif';
@@ -169,7 +170,6 @@ function camera3d() {
     txt('simply looks back at you.', pad, VH * 0.749, '400 18.4px ' + sans, MUTED);
     var ah = VH * 0.56, aw = ah * 0.8; art(VW - pad - aw, VH * 0.319, aw, ah);
     g.restore();
-    if (artImg.complete && artImg.naturalWidth && !artBad) { try { g.getImageData(0, 0, 1, 1); } catch (e) { artBad = true; drawSite(); } }   // a file:// page taints the canvas: fall back to the gradient
   }
   drawSite();
   var scrC = document.createElement('canvas'); scrC.width = SW; scrC.height = SH; var sg = scrC.getContext('2d');
