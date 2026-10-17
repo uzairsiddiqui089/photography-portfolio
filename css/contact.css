@@ -43,5 +43,3 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .row { grid-template-columns: 1fr; } .btn { padding: 0.8rem 1.4rem; } }
 
-.side-photo { aspect-ratio: 4 / 5; background-size: cover; background-position: center 20%; border-radius: 14px; }
-@media (max-width: 900px) { .side-photo { aspect-ratio: 16 / 10; } }
