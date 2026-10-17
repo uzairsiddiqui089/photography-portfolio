@@ -98,7 +98,7 @@ function camera3d() {
   // The real first photo is shown on the screen too, but only when served over http(s). On a file:// page the browser treats the image as foreign and locks the whole screen texture, so we skip it there.
   var artImg = new Image(), artBad = window.location.protocol === 'file:';
   artImg.onload = function () { redrawSite(); };
-  if (!artBad) artImg.src = 'images/capture-portraits.jpg';
+  if (!artBad) artImg.src = 'images/colour/portrait-lilac.webp';
   function drawSite() {
     relayout();
     var g = siteC.getContext('2d'), serif = 'Fraunces, Georgia, serif', sans = 'Manrope, Arial, sans-serif';
@@ -586,7 +586,7 @@ mm.add({
     // ----- the reel: two connected film strips that wind across the background like snakes while the camera turns -----
     var reelEl = hero.querySelector('.reel');
     var reel = (function () {
-      var photos = ['work-mask-series', 'capture-fashion', 'work-concrete-silk', 'capture-documentary', 'work-after-hours', 'capture-editorial', 'work-quiet-ones', 'more-laughing', 'work-glass-house', 'capture-portraits', 'more-over-shoulder', 'more-walking-linen'];
+      var photos = ['colour/fashion-camel-coat.webp', 'work-mask-series.jpg', 'colour/portrait-lilac.webp', 'work-concrete-silk.jpg', 'colour/editorial-teal-magenta.webp', 'capture-documentary.jpg', 'colour/beauty-gold.webp', 'work-quiet-ones.jpg', 'colour/event-garden-party.webp', 'more-laughing.jpg', 'work-glass-house.jpg', 'more-over-shoulder.jpg'];
       // each frame shows only a glimpse: zoomed in on a different part of its photo
       var glimpse = ['50% 18%', '30% 30%', '68% 22%', '50% 55%', '40% 15%', '62% 40%', '35% 60%', '55% 28%'];
       var strips = [], active = false, built = false, prog = 0, fw = 200, fh = 210, last = performance.now(), timer, builtW = 0;
@@ -602,7 +602,7 @@ mm.add({
             var f = document.createElement('div'); f.className = 'fr'; f.style.width = fw + 'px'; f.style.height = fh + 'px';
             f.style.padding = Math.round(fh * 0.13) + 'px 0';
             var pos = glimpse[(n + i * 3) % glimpse.length];
-            var im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = 'images/' + photos[n++ % photos.length] + '.jpg';
+            var im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = 'images/' + photos[n++ % photos.length];
             im.style.objectPosition = pos; im.style.transformOrigin = pos;
             var box = document.createElement('div'); box.className = 'ph'; box.appendChild(im); f.appendChild(box); reelEl.appendChild(f); strip.frames.push(f);
           }
