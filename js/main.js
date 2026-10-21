@@ -144,7 +144,7 @@ function camera3d() {
     }
 
     if (VW < 900) {   // phones and tablets: the same two pages, laid out the way a narrow screen shows them
-      var P = VW < 640 ? 20 : 28, bx0 = VW - P - 112;
+      var P = Math.max(20, Math.min(56, VW * 0.04)), bx0 = VW - P - 112;
       sec(0);
       g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.arc(P + 11, 36, 10, 0, 7); g.stroke();
       txt('Quiet Aperture', P + 30, 42, '600 16.8px ' + serif, INK);
@@ -158,15 +158,15 @@ function camera3d() {
       pill(P, VH - 58, 'See the work', false, true);
       g.restore();
       sec(1);
-      var h2p = VW < 640 ? 32 : 40;
-      txt('What we capture', P, 100, '400 ' + h2p + 'px ' + serif, INK, 'left', (-0.02 * h2p) + 'px');
-      txt('Five kinds of pictures, one way of looking.', P, 136, '400 16px ' + sans, MUTED);
-      txt('01', P, 192, '500 11.2px ' + sans, '#a8552a', 'left', '1.8px');
-      txt('Portraits', P, 246, '400 41.6px ' + serif, INK, 'left', '-1.2px');
-      txt('The moment someone stops', P, 284, '400 18.4px ' + sans, MUTED);
-      txt('performing and simply looks back', P, 313, '400 18.4px ' + sans, MUTED);
-      txt('at you.', P, 342, '400 18.4px ' + sans, MUTED);
-      var aw2 = VW - 2 * P; art(P, 372, aw2, aw2 * 1.25);
+      var h2p = 32, ah2 = VH * 0.46;   // the page as it is when What we capture is pinned on a narrow screen
+      txt('What we capture', P, 108, '400 ' + h2p + 'px ' + serif, INK, 'left', (-0.02 * h2p) + 'px');
+      txt('Five kinds of pictures, one way of looking.', P, 150, '400 16px ' + sans, MUTED);
+      txt('01', P, 188, '500 11.2px ' + sans, '#a8552a', 'left', '1.8px');
+      txt('Portraits', P, 226, '400 38.4px ' + serif, INK, 'left', '-1.15px');
+      txt('The moment someone stops', P, 258, '400 16px ' + sans, MUTED);
+      txt('performing and simply looks back', P, 284, '400 16px ' + sans, MUTED);
+      txt('at you.', P, 310, '400 16px ' + sans, MUTED);
+      art(P, 336, ah2 * 0.8, ah2);
       g.restore();
       return;
     }
@@ -638,7 +638,7 @@ mm.add({
   tall: '(min-height: 620px)'
 }, function (ctx) {
   var motion = ctx.conditions.motion;
-  var pin = ctx.conditions.wide && ctx.conditions.tall;
+  var pin = ctx.conditions.tall;   // pinned scroll scenes on every screen that is tall enough
   var cleanups = [];
   if (!motion) { return function () {}; }
 

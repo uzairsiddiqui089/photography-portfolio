@@ -370,3 +370,21 @@ footer { margin-top: 0; padding: 1.5rem var(--pad); border-top: 1px solid var(--
   .vf .c3 { left: 0.3rem; bottom: 0.3rem; } .vf .c4 { right: 0.3rem; bottom: 0.3rem; }
   .track { scroll-padding-left: var(--pad); }
 }
+
+/* ---------- Pinned scroll scenes on phones and tablets: the same animations, fitted to a narrow screen ---------- */
+@media (max-width: 900px) {
+  .capture.pinned { justify-content: flex-start; padding-top: 5rem; }
+  .capture.pinned .cap-head { margin-bottom: 0.75rem; }
+  .capture.pinned .cap-head h2 { font-size: 2rem; margin-bottom: 0.4rem; }
+  .capture.pinned .cap-meta { display: none; }
+  .capture.pinned .subject { grid-template-columns: 1fr; gap: 0.9rem; align-content: start; }
+  .capture.pinned .subject-copy h3 { font-size: 2.4rem; margin: 0.2rem 0 0.4rem; }
+  .capture.pinned .subject-copy p { font-size: 1rem; }
+  .capture.pinned .subject-art { height: 46vh; height: 46svh; width: auto; max-height: none; justify-self: start; }
+  .work.pinned .work-head { padding-bottom: 1rem; }
+  .level.pinned .lv-head { font-size: clamp(1.9rem, 8vw, 2.6rem); margin-bottom: 1.2rem; }
+  .level.pinned .levels { gap: 0.8rem; }
+  .level.pinned .lv-item { padding-top: 0.6rem; }
+  .level.pinned .lv-item h3 { font-size: 1.5rem; margin: 0.2rem 0 0.3rem; }
+  .level.pinned .lv-item p { font-size: 0.92rem; }
+}
