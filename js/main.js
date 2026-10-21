@@ -4,6 +4,7 @@ function pad(n) { return ('0' + n).slice(-2); }
 function pad3(n) { return ('00' + n).slice(-3); }
 var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var small = window.innerWidth < 900;   // phones and tablets: a finished camera in the hero, no build-up and no flying journey
+var critical = [];   // promises for the photos the intro waits for before it lifts the curtain
 
 // ---------- Static setup (works without any library) ----------
 document.querySelectorAll('a[href="#"]').forEach(function (a) {
@@ -100,7 +101,7 @@ function camera3d() {
   // The real first photo is shown on the screen too, but only when served over http(s). On a file:// page the browser treats the image as foreign and locks the whole screen texture, so we skip it there.
   var artImg = new Image(), artBad = window.location.protocol === 'file:';
   artImg.onload = function () { redrawSite(); };
-  if (!artBad) artImg.src = 'images/colour/portrait-lilac.webp';
+  if (!artBad) { critical.push(new Promise(function (r) { artImg.addEventListener('load', r); artImg.addEventListener('error', r); })); artImg.src = 'images/colour/portrait-lilac.webp'; }
   function drawSite() {
     relayout();
     var g = siteC.getContext('2d'), serif = 'Fraunces, Georgia, serif', sans = 'Manrope, Arial, sans-serif';
@@ -584,12 +585,36 @@ var cam = camera3d();
   build.eventCallback('onUpdate', function () { num.textContent = pad3(Math.round(Math.min(1, build.progress()) * 100)); });
   build.eventCallback('onComplete', function () {
     num.textContent = '100';
-    announce();
-    gsap.to(loader, { autoAlpha: 0, duration: 0.4, delay: 0.1, ease: 'power2.inOut', onComplete: finish });
+    // the curtain lifts once the fonts and the first photos are ready (or after 3.5 seconds at most)
+    var ready = Promise.all(critical.concat([document.fonts && document.fonts.ready].filter(Boolean)));
+    Promise.race([ready, new Promise(function (r) { setTimeout(r, 3500); })]).then(function () {
+      announce();
+      gsap.to(loader, { autoAlpha: 0, duration: 0.4, delay: 0.1, ease: 'power2.inOut', onComplete: finish });
+    });
   });
   build.play();
   setTimeout(function () { if (build.progress() < 1) build.progress(1); }, 4500);   // never let a slow device leave the camera half-built
   loader.querySelector('.ld-skip').addEventListener('click', function () { build.timeScale(8); });
+})();
+
+// ---------- Photos below the first screen: they load quietly once the intro is done (or just before you reach them) ----------
+(function lazyBackgrounds() {
+  function show(el) {
+    var u = el.getAttribute('data-bg'); if (!u) return;
+    el.removeAttribute('data-bg');
+    var im = new Image(); im.onload = im.onerror = function () { el.style.backgroundImage = "url('" + u + "')"; };
+    im.src = u;
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (en) { en.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } }); }, { rootMargin: '1500px 0px' });
+    document.querySelectorAll('[data-bg]').forEach(function (el) { io.observe(el); });
+  }
+  function rest() {   // a few at a time, so nothing competes with scrolling
+    var left = document.querySelectorAll('[data-bg]');
+    [].slice.call(left, 0, 3).forEach(show);
+    if (left.length > 3) setTimeout(rest, 300);
+  }
+  if (window.siteReady) setTimeout(rest, 600); else document.addEventListener('site:ready', function () { setTimeout(rest, 600); }, { once: true });
 })();
 
 // ---------- Helpers ----------
@@ -655,7 +680,7 @@ mm.add({
             var f = document.createElement('div'); f.className = 'fr'; f.style.width = fw + 'px'; f.style.height = fh + 'px';
             f.style.padding = Math.round(fh * 0.13) + 'px 0';
             var pos = glimpse[(n + i * 3) % glimpse.length];
-            var im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = 'images/' + photos[n++ % photos.length];
+            var im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = 'images/' + photos[n++ % photos.length]; critical.push(im.decode ? im.decode().catch(function () {}) : Promise.resolve());
             im.style.objectPosition = pos; im.style.transformOrigin = pos;
             var box = document.createElement('div'); box.className = 'ph'; box.appendChild(im); f.appendChild(box); reelEl.appendChild(f); strip.frames.push(f);
           }
@@ -682,11 +707,10 @@ mm.add({
       gsap.ticker.add(update);
       var onResize = function () { if (window.innerWidth !== builtW) { clearTimeout(timer); timer = setTimeout(build, 250); } };
       window.addEventListener('resize', onResize);
-      // load the photos a moment after the intro, so they never compete with it
-      var start = function () { setTimeout(function () { if (!built) build(); }, 500); };
-      if (window.siteReady) start(); else document.addEventListener('site:ready', start, { once: true });
+      // fetch the photos straight away: they download while the camera assembles, so the page is ready when the curtain lifts
+      setTimeout(function () { if (!built) build(); }, 150);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (built) build(); });   // measure again once the real fonts have arrived
-      cleanups.push(function () { gsap.ticker.remove(update); window.removeEventListener('resize', onResize); document.removeEventListener('site:ready', start); reelEl.textContent = ''; built = false; });
+      cleanups.push(function () { gsap.ticker.remove(update); window.removeEventListener('resize', onResize); reelEl.textContent = ''; built = false; });
       return { set: function (p) { prog = p; active = p > 0.02 && p < 0.93; } };
     })();
     gsap.timeline({

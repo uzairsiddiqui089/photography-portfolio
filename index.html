@@ -11,7 +11,11 @@
   // Show the camera build-up only when motion is welcome (the page works without it).
   (function () {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduce) document.documentElement.classList.add('is-loading');
+    if (!reduce) {
+      document.documentElement.classList.add('is-loading');
+      // start fetching the photos the intro and the first scroll need, while the scripts download
+      ['colour/fashion-camel-coat.webp', 'work-mask-series.jpg', 'colour/portrait-lilac.webp', 'work-concrete-silk.jpg', 'colour/editorial-teal-magenta.webp', 'capture-documentary.jpg', 'colour/beauty-gold.webp', 'work-quiet-ones.jpg', 'colour/event-garden-party.webp', 'more-laughing.jpg', 'work-glass-house.jpg', 'more-over-shoulder.jpg'].forEach(function (p) { new Image().src = 'images/' + p; });
+    }
   })();
 </script>
 
@@ -20,12 +24,13 @@
   1. Colors and fonts: change the variables in :root.
   2. Text: edit anything in the HTML. No build step.
   3. Photos: each ".shot" (Recent work) and ".subject-art" (What we capture) has a placeholder
-     gradient (classes s1 to s5). To use a real photo add:  style="background-image:url('images/your-photo.jpg')"
+     gradient (classes s1 to s5). To use a real photo add:  data-bg="images/your-photo.jpg"
   4. The 3D camera is built in code (search for "camera3d" in the script). It is a generic DSLR, no brand.
      Colors and materials are in the "M" object, the shapes below it.
   5. Animations use GSAP and Three.js, loaded from CDNs near the bottom. Check their licenses before selling.
 -->
 
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
@@ -104,23 +109,23 @@
     <div class="subjects">
       <article class="subject">
         <div class="subject-copy"><span class="eyebrow">01</span><h3>Portraits</h3><p>The moment someone stops performing and simply looks back at you.</p></div>
-        <div class="subject-art s1" role="img" aria-label="A woman in a black top walking toward the camera along a sunlit white wall" style="background-image:url('images/colour/portrait-lilac.webp')"></div>
+        <div class="subject-art s1" role="img" aria-label="A woman in a cream cardigan sits on a pink stool against a lilac backdrop" style="background-image:url('images/colour/portrait-lilac.webp')"></div>
       </article>
       <article class="subject">
         <div class="subject-copy"><span class="eyebrow">02</span><h3>Fashion</h3><p>Clothes that move, in light that works with them instead of against them.</p></div>
-        <div class="subject-art s2" role="img" aria-label="A model in a long black silk coat caught mid-step against a concrete wall" style="background-image:url('images/colour/fashion-camel-coat.webp')"></div>
+        <div class="subject-art s2" role="img" aria-label="A man in a camel coat leans against a terracotta wall in golden light" data-bg="images/colour/fashion-camel-coat.webp"></div>
       </article>
       <article class="subject">
         <div class="subject-copy"><span class="eyebrow">03</span><h3>Editorial</h3><p>One frame that carries a whole story, made for the page it will sit on.</p></div>
-        <div class="subject-art s3" role="img" aria-label="A woman in a black blazer seated on a stool with a diagonal block of light behind her" style="background-image:url('images/colour/editorial-teal-magenta.webp')"></div>
+        <div class="subject-art s3" role="img" aria-label="A man in a black blazer sits on a leather bench against a deep teal wall" data-bg="images/colour/editorial-teal-magenta.webp"></div>
       </article>
       <article class="subject">
         <div class="subject-copy"><span class="eyebrow">04</span><h3>Documentary</h3><p>People as they are when nobody is asking them to be anything else.</p></div>
-        <div class="subject-art s4" role="img" aria-label="A woman shaping clay by a large window in a ceramic workshop" style="background-image:url('images/capture-documentary.jpg')"></div>
+        <div class="subject-art s4" role="img" aria-label="A woman shaping clay by a large window in a ceramic workshop" data-bg="images/capture-documentary.jpg"></div>
       </article>
       <article class="subject">
         <div class="subject-copy"><span class="eyebrow">05</span><h3>Spaces</h3><p>Rooms and buildings photographed so you can feel who lives and works in them.</p></div>
-        <div class="subject-art s5" role="img" aria-label="A small figure in a black coat beside a tall window and a long concrete staircase" style="background-image:url('images/capture-spaces.jpg')"></div>
+        <div class="subject-art s5" role="img" aria-label="A small figure in a black coat beside a tall window and a long concrete staircase" data-bg="images/capture-spaces.jpg"></div>
       </article>
     </div>
   </section>
@@ -140,23 +145,23 @@
 
     <div class="track" aria-label="Recent work gallery">
       <article class="panel">
-        <div class="shot s1" role="img" aria-label="A woman with a sheer black veil over the lower half of her face" style="background-image:url('images/work-mask-series.jpg')"><div class="vf-meta"><span>f/1.8</span><span>1/250</span><span>ISO 400</span></div></div>
+        <div class="shot s1" role="img" aria-label="A woman with a sheer black veil over the lower half of her face" data-bg="images/work-mask-series.jpg"><div class="vf-meta"><span>f/1.8</span><span>1/250</span><span>ISO 400</span></div></div>
         <div class="cap"><h3>Mask Series</h3><span>Portrait, 2026</span></div>
       </article>
       <article class="panel">
-        <div class="shot s2" role="img" aria-label="A woman in a black jacket seated on a leather bench in a dark studio" style="background-image:url('images/work-after-hours.jpg')"><div class="vf-meta"><span>f/2.8</span><span>1/125</span><span>ISO 800</span></div></div>
+        <div class="shot s2" role="img" aria-label="A woman in a black jacket seated on a leather bench in a dark studio" data-bg="images/work-after-hours.jpg"><div class="vf-meta"><span>f/2.8</span><span>1/125</span><span>ISO 800</span></div></div>
         <div class="cap"><h3>After Hours</h3><span>Fashion, 2026</span></div>
       </article>
       <article class="panel">
-        <div class="shot s3" role="img" aria-label="A woman in a pale silk dress leaning on a concrete wall beside her shadow" style="background-image:url('images/work-concrete-silk.jpg')"><div class="vf-meta"><span>f/4</span><span>1/500</span><span>ISO 200</span></div></div>
+        <div class="shot s3" role="img" aria-label="A woman in a pale silk dress leaning on a concrete wall beside her shadow" data-bg="images/work-concrete-silk.jpg"><div class="vf-meta"><span>f/4</span><span>1/500</span><span>ISO 200</span></div></div>
         <div class="cap"><h3>Concrete and Silk</h3><span>Editorial, 2025</span></div>
       </article>
       <article class="panel">
-        <div class="shot s4" role="img" aria-label="A woman holding a paper cup on a station platform" style="background-image:url('images/work-quiet-ones.jpg')"><div class="vf-meta"><span>f/2</span><span>1/60</span><span>ISO 1600</span></div></div>
+        <div class="shot s4" role="img" aria-label="A woman holding a paper cup on a station platform" data-bg="images/work-quiet-ones.jpg"><div class="vf-meta"><span>f/2</span><span>1/60</span><span>ISO 1600</span></div></div>
         <div class="cap"><h3>The Quiet Ones</h3><span>Documentary, 2025</span></div>
       </article>
       <article class="panel">
-        <div class="shot s5" role="img" aria-label="A small figure standing inside a glass house at dusk" style="background-image:url('images/work-glass-house.jpg')"><div class="vf-meta"><span>f/8</span><span>1/250</span><span>ISO 100</span></div></div>
+        <div class="shot s5" role="img" aria-label="A small figure standing inside a glass house at dusk" data-bg="images/work-glass-house.jpg"><div class="vf-meta"><span>f/8</span><span>1/250</span><span>ISO 100</span></div></div>
         <div class="cap"><h3>Glass House</h3><span>Architecture, 2025</span></div>
       </article>
       <article class="panel panel-cta">
@@ -194,27 +199,27 @@
     </div>
     <div class="svc-grid">
       <a class="svc" href="contact.html?service=portrait#book">
-        <div class="svc-img" style="background-image:url('images/colour/portrait-lilac.webp')"></div>
+        <div class="svc-img" data-bg="images/colour/portrait-lilac.webp"></div>
         <div class="svc-body"><span class="svc-num">01</span><h3>Portraits</h3><p>Natural light, true to you.</p><span class="svc-go">Book &rarr;</span></div>
       </a>
       <a class="svc" href="contact.html?service=fashion#book">
-        <div class="svc-img" style="background-image:url('images/colour/fashion-camel-coat.webp')"></div>
+        <div class="svc-img" data-bg="images/colour/fashion-camel-coat.webp"></div>
         <div class="svc-body"><span class="svc-num">02</span><h3>Fashion</h3><p>Lookbooks and campaigns.</p><span class="svc-go">Book &rarr;</span></div>
       </a>
       <a class="svc" href="contact.html?service=editorial#book">
-        <div class="svc-img" style="background-image:url('images/colour/editorial-teal-magenta.webp')"></div>
+        <div class="svc-img" data-bg="images/colour/editorial-teal-magenta.webp"></div>
         <div class="svc-body"><span class="svc-num">03</span><h3>Editorial</h3><p>One idea, told in pictures.</p><span class="svc-go">Book &rarr;</span></div>
       </a>
       <a class="svc" href="contact.html?service=brand#book">
-        <div class="svc-img" style="background-image:url('images/more-walking-linen.jpg')"></div>
+        <div class="svc-img" data-bg="images/more-walking-linen.jpg"></div>
         <div class="svc-body"><span class="svc-num">04</span><h3>Brand</h3><p>Team and product imagery.</p><span class="svc-go">Book &rarr;</span></div>
       </a>
       <a class="svc" href="contact.html?service=event#book">
-        <div class="svc-img" style="background-image:url('images/colour/event-garden-party.webp')"></div>
+        <div class="svc-img" data-bg="images/colour/event-garden-party.webp"></div>
         <div class="svc-body"><span class="svc-num">05</span><h3>Events</h3><p>Covered quietly, from 2 hours.</p><span class="svc-go">Book &rarr;</span></div>
       </a>
       <a class="svc" href="contact.html?service=retouch#book">
-        <div class="svc-img" style="background-image:url('images/colour/beauty-gold.webp')"></div>
+        <div class="svc-img" data-bg="images/colour/beauty-gold.webp"></div>
         <div class="svc-body"><span class="svc-num">06</span><h3>Retouching</h3><p>Done by hand, lightly.</p><span class="svc-go">Ask &rarr;</span></div>
       </a>
     </div>
@@ -227,11 +232,11 @@
       <p class="lead">Five steps, no surprises.</p>
     </div>
     <ol class="proc-tiles">
-      <li class="tile"><div class="tile-img" style="background-image:url('images/more-laughing.jpg')"></div><div class="tile-body"><span class="tile-num">01</span><h3>Brief</h3><p>Tell us the look.</p></div></li>
-      <li class="tile"><div class="tile-img" style="background-image:url('images/capture-fashion.jpg')"></div><div class="tile-body"><span class="tile-num">02</span><h3>Shoot</h3><p>Half or full day.</p></div></li>
-      <li class="tile"><div class="tile-img" style="background-image:url('images/capture-editorial.jpg')"></div><div class="tile-body"><span class="tile-num">03</span><h3>Select</h3><p>Pick within 48 hours.</p></div></li>
-      <li class="tile"><div class="tile-img" style="background-image:url('images/more-beauty.jpg')"></div><div class="tile-body"><span class="tile-num">04</span><h3>Retouch</h3><p>Done by hand.</p></div></li>
-      <li class="tile"><div class="tile-img" style="background-image:url('images/capture-portraits.jpg')"></div><div class="tile-body"><span class="tile-num">05</span><h3>Deliver</h3><p>Files in a week.</p></div></li>
+      <li class="tile"><div class="tile-img" data-bg="images/more-laughing.jpg"></div><div class="tile-body"><span class="tile-num">01</span><h3>Brief</h3><p>Tell us the look.</p></div></li>
+      <li class="tile"><div class="tile-img" data-bg="images/capture-fashion.jpg"></div><div class="tile-body"><span class="tile-num">02</span><h3>Shoot</h3><p>Half or full day.</p></div></li>
+      <li class="tile"><div class="tile-img" data-bg="images/capture-editorial.jpg"></div><div class="tile-body"><span class="tile-num">03</span><h3>Select</h3><p>Pick within 48 hours.</p></div></li>
+      <li class="tile"><div class="tile-img" data-bg="images/more-beauty.jpg"></div><div class="tile-body"><span class="tile-num">04</span><h3>Retouch</h3><p>Done by hand.</p></div></li>
+      <li class="tile"><div class="tile-img" data-bg="images/capture-portraits.jpg"></div><div class="tile-body"><span class="tile-num">05</span><h3>Deliver</h3><p>Files in a week.</p></div></li>
     </ol>
   </section>
 
