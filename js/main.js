@@ -470,13 +470,14 @@ function camera3d() {
 
   // ---- build-up: piece by piece, horizontally along the lens axis ----
   var say = function () {};
+  var K = small ? 0.38 : 1;   // on phones the parts fly in over a short distance, so nothing leaves the screen
   var bodyParts = [
-    [body,     0.0,  { y: -7 },  'power3.out'],
-    [topPlate, 0.45, { y: 6 },   'power3.out'],
-    [grip,     0.7,  { x: -8 },  'back.out(1.5)'],
-    [prism,    0.95, { y: 7 },   'back.out(1.4)'],
-    [topCtl,   1.2,  { y: 3 },   'power3.out'],
-    [rear,     1.3,  { z: -7 },  'power3.out']
+    [body,     0.0,  { y: -7 * K },  'power3.out'],
+    [topPlate, 0.45, { y: 6 * K },   'power3.out'],
+    [grip,     0.7,  { x: -8 * K },  'back.out(1.5)'],
+    [prism,    0.95, { y: 7 * K },   'back.out(1.4)'],
+    [topCtl,   1.2,  { y: 3 * K },   'power3.out'],
+    [rear,     1.3,  { z: -7 * K },  'power3.out']
   ];
   var build = gsap.timeline({ paused: true, timeScale: 4, defaults: { duration: 0.8, ease: 'power3.out' } });   // about 1.5 seconds
   var all = bodyParts.map(function (p) { return p[0]; }).concat([mount], seg);
@@ -491,7 +492,7 @@ function camera3d() {
   seg.forEach(function (s, i) {
     var t = 2.1 + i * 0.3;
     build.set(s, { visible: true }, t)
-         .from(s.position, { z: s.position.z + 9, x: 3.5, duration: 0.85, ease: 'power3.out' }, t);
+         .from(s.position, { z: s.position.z + 9 * K, x: 3.5 * K, duration: 0.85, ease: 'power3.out' }, t);
   });
   var lensEnd = 2.1 + (seg.length - 1) * 0.3 + 0.85;
   build.call(function () { say('Seating the glass'); }, null, lensEnd - 0.7)
@@ -503,7 +504,8 @@ function camera3d() {
        .call(function () { say('Ready'); }, null, lensEnd + 0.2)
        .from(rig.rotation, { y: -0.75, duration: lensEnd + 0.4, ease: 'power2.inOut' }, 0);
 
-  if (reduce || small) { build.progress(1); placeStatic(); }
+  if (reduce) { build.progress(1); placeStatic(); }
+  else if (small) { placeStatic(); build.timeScale(3); build.play(); }   // phones: it assembles right in the hero
 
   // ---- render loop ----
   var clock = new T.Clock(), lastT = performance.now(), sumT = 0, nFrames = 0;
@@ -596,7 +598,7 @@ mm.add({
   // ===== Scroll journey: the camera turns, flies into the screen, and you look through the lens =====
   var hero = document.querySelector('.hero');
   var vf = document.querySelector('.vf'), vig = document.querySelector('.vig');
-  if (cam && !small) {
+  if (cam) {
     var jr = cam.journey;
     // ----- the reel: two connected film strips that wind across the background like snakes while the camera turns -----
     var reelEl = hero.querySelector('.reel');
@@ -607,12 +609,13 @@ mm.add({
       var strips = [], active = false, built = false, prog = 0, fw = 200, fh = 210, last = performance.now(), timer, builtW = 0;
       function build() {
         reelEl.textContent = ''; strips = [];
-        var W = window.innerWidth, small = W < 700, n = 0;
+        var W = window.innerWidth, n = 0;
         builtW = W;
         fw = small ? Math.round(W * 0.22) : Math.round(Math.max(150, Math.min(250, W * 0.15))); fh = Math.round(fw * 1.08);
         var step = fw * 0.96, per = Math.ceil((W + fw * 3) / step) + 1;
+        var hc = hero.querySelector('.hero-copy'), hf = hero.querySelector('.hero-foot'), bTop = hc.offsetTop + hc.offsetHeight, bH = hf.offsetTop - bTop;   // the free band the camera sits in
         for (var s = 0; s < 2; s++) {
-          var strip = { dir: s ? 1 : -1, speed: s ? 58 : 76, off: s * 200, phase: s * Math.PI, y: s ? 0.7 : 0.32, step: step, frames: [] };
+          var strip = { dir: s ? 1 : -1, speed: s ? 58 : 76, off: s * 200, phase: s * Math.PI, y: s ? 0.7 : 0.32, yPx: (small && bH > 60) ? bTop + bH * (s ? 0.74 : 0.26) : null, step: step, frames: [] };
           for (var i = 0; i < per; i++) {
             var f = document.createElement('div'); f.className = 'fr'; f.style.width = fw + 'px'; f.style.height = fh + 'px';
             f.style.padding = Math.round(fh * 0.13) + 'px 0';
@@ -629,9 +632,9 @@ mm.add({
         var now = performance.now(), dt = Math.min(0.1, (now - last) / 1000); last = now;
         if (!active || !built || document.hidden) return;
         var t = now / 1000, W = window.innerWidth, H = window.innerHeight;
-        var amp = H * (0.09 + 0.06 * prog), k = Math.PI * 2 / (W * 2), boost = 1 + prog * 1.4;
+        var amp = small ? fh * 0.12 : H * (0.09 + 0.06 * prog), k = Math.PI * 2 / (W * 2), boost = 1 + prog * 1.4;
         for (var s = 0; s < strips.length; s++) {
-          var st = strips[s], cy = st.y * H;
+          var st = strips[s], cy = st.yPx != null ? st.yPx : st.y * H;
           st.off += st.dir * st.speed * boost * dt;
           for (var i = 0; i < st.frames.length; i++) {
             var x = ((i * st.step + st.off) % st.total + st.total) % st.total - fw * 1.5;
@@ -647,9 +650,11 @@ mm.add({
       // load the photos a moment after the intro, so they never compete with it
       var start = function () { setTimeout(function () { if (!built) build(); }, 500); };
       if (window.siteReady) start(); else document.addEventListener('site:ready', start, { once: true });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (built) build(); });   // measure again once the real fonts have arrived
       cleanups.push(function () { gsap.ticker.remove(update); window.removeEventListener('resize', onResize); document.removeEventListener('site:ready', start); reelEl.textContent = ''; built = false; });
       return { set: function (p) { prog = p; active = p > 0.02 && p < 0.93; } };
     })();
+    if (!small) {
     gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: { trigger: hero, start: 'top top', end: '+=330%', pin: true, scrub: 0.7, invalidateOnRefresh: true, onUpdate: function (self) { reel.set(self.progress); } }
@@ -709,6 +714,12 @@ mm.add({
       };
       ScrollTrigger.create({ trigger: sec, start: 'top 55%', end: 'bottom 55%', onEnter: set, onEnterBack: set });
     });
+    } else {
+      // phones and tablets: the film strips drift behind the camera, and the camera slowly turns as the hero scrolls away
+      ScrollTrigger.create({ trigger: hero, start: 'top bottom', end: 'bottom top', onToggle: function (self) { reel.set(self.isActive ? 0.25 : 0); } });
+      gsap.to(reelEl, { autoAlpha: 0.95, duration: 1.2, delay: 1 });
+      gsap.fromTo(cam.journey.rotation, { y: 0 }, { y: -1.3, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 } });
+    }
   }
 
   // ===== Scroll: what we capture, one subject at a time =====
