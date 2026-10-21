@@ -87,7 +87,7 @@ function camera3d() {
     g.font = '500 24px Manrope, Arial, sans-serif'; g.fillStyle = '#a8f0d0'; g.fillText('ISO 400   [ 1284 ]', 14, 92);
   });
   // ---- the camera's rear screen: a live view of this very page, laid out exactly like the browser window ----
-  var SW = window.innerWidth > 900 ? 1440 : 1024, SH = Math.round(SW / 1.584), SECS = 2;          // texture size; two "pages": the hero, then What we capture
+  var SW = window.innerWidth > 900 ? 1440 : 1500, SH = Math.round(SW / 1.584), SECS = 2;          // texture size; two "pages": the hero, then What we capture
   var siteC = document.createElement('canvas'); siteC.width = SW; siteC.height = SH * SECS;
   var lay = { rw: SW, rh: SH, ox: 0, oy: 0, f: 1, VW: 1440, VH: 900 };
   function relayout() {
@@ -112,8 +112,8 @@ function camera3d() {
       g.fillText(s, x, y);
       if ('letterSpacing' in g) g.letterSpacing = '0px';
     }
-    function pill(cx, cy, label, filled) {   // right-aligned pill whose right edge is cx
-      g.font = '700 17px ' + sans; var w = g.measureText(label).width + 61, h = 58, x = cx - w, y = cy - h / 2, r = h / 2;
+    function pill(cx, cy, label, filled, left) {   // pill whose right edge is cx (or its left edge, when left is true)
+      g.font = '700 17px ' + sans; var w = g.measureText(label).width + 61, h = 58, x = left ? cx : cx - w, y = cy - h / 2, r = h / 2;
       g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r);
       if (filled) { g.fillStyle = INK; g.fill(); } else { g.strokeStyle = 'rgba(11,11,11,0.25)'; g.lineWidth = 1; g.stroke(); }
       txt(label, x + w / 2, cy + 6, '700 17px ' + sans, filled ? '#efe3c8' : INK, 'center');
@@ -142,6 +142,33 @@ function camera3d() {
       g.moveTo(X, Y2 - k); g.lineTo(X, Y2); g.lineTo(X + k, Y2); g.moveTo(X2 - k, Y2); g.lineTo(X2, Y2); g.lineTo(X2, Y2 - k); g.stroke();
     }
 
+    if (VW < 900) {   // phones and tablets: the same two pages, laid out the way a narrow screen shows them
+      var P = VW < 640 ? 20 : 28, bx0 = VW - P - 112;
+      sec(0);
+      g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.arc(P + 11, 36, 10, 0, 7); g.stroke();
+      txt('Quiet Aperture', P + 30, 42, '600 16.8px ' + serif, INK);
+      g.beginPath(); g.moveTo(bx0 + 18, 18); g.arcTo(bx0 + 112, 18, bx0 + 112, 54, 18); g.arcTo(bx0 + 112, 54, bx0, 54, 18); g.arcTo(bx0, 54, bx0, 18, 18); g.arcTo(bx0, 18, bx0 + 112, 18, 18); g.fillStyle = INK; g.fill();
+      txt('Book a shoot', bx0 + 56, 41, '700 13.5px ' + sans, '#efe3c8', 'center');
+      txt('PORTRAIT AND FASHION STUDIO, LISBON', P, 92, '500 11.2px ' + sans, '#a8552a', 'left', '1.1px');
+      var f1 = VW < 640 ? 27.2 : 40, l1 = f1 * 1.06;
+      ['We photograph people', 'who would rather not be', 'photographed.'].forEach(function (s, i) { txt(s, P, 130 + i * l1, '400 ' + f1 + 'px ' + serif, INK, 'left', (-0.02 * f1) + 'px'); });
+      txt('Natural light, a small crew and', P, VH - 150, '400 15.7px ' + sans, MUTED);
+      txt('hand retouching.', P, VH - 124, '400 15.7px ' + sans, MUTED);
+      pill(P, VH - 58, 'See the work', false, true);
+      g.restore();
+      sec(1);
+      var h2p = VW < 640 ? 32 : 40;
+      txt('What we capture', P, 100, '400 ' + h2p + 'px ' + serif, INK, 'left', (-0.02 * h2p) + 'px');
+      txt('Five kinds of pictures, one way of looking.', P, 136, '400 16px ' + sans, MUTED);
+      txt('01', P, 192, '500 11.2px ' + sans, '#a8552a', 'left', '1.8px');
+      txt('Portraits', P, 246, '400 41.6px ' + serif, INK, 'left', '-1.2px');
+      txt('The moment someone stops', P, 284, '400 18.4px ' + sans, MUTED);
+      txt('performing and simply looks back', P, 313, '400 18.4px ' + sans, MUTED);
+      txt('at you.', P, 342, '400 18.4px ' + sans, MUTED);
+      var aw2 = VW - 2 * P; art(P, 372, aw2, aw2 * 1.25);
+      g.restore();
+      return;
+    }
     // page 0: the hero (text left and right, the camera sits in the middle)
     sec(0);
     g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.arc(pad + 12, 36, 10.5, 0, 7); g.stroke();
@@ -183,6 +210,13 @@ function camera3d() {
     var a = screenState.hud; if (a > 0.01) {   // viewfinder readouts, drawn in the same places as the real overlay
       if (!hudDom) hudDom = { tc: document.querySelector('.vf-tc'), fr: document.querySelector('.vf-frame'), f: document.querySelector('.vf-f'), s: document.querySelector('.vf-s'), i: document.querySelector('.vf-i'), l: document.querySelector('.vf-label') };
       var VW = lay.VW, VH = lay.VH, ink = '#101c37', font = '600 11.84px Manrope, Arial, sans-serif';
+      if (VW <= 640) {   // on a phone the overlay keeps only its small corners
+        sg.save(); sg.translate(lay.ox, lay.oy); sg.scale(lay.f, lay.f); sg.globalAlpha = a; sg.strokeStyle = ink; sg.lineWidth = 2;
+        [[4.8, 4.8, 1, 1], [VW - 4.8, 4.8, -1, 1], [4.8, VH - 4.8, 1, -1], [VW - 4.8, VH - 4.8, -1, -1]].forEach(function (c) {
+          sg.beginPath(); sg.moveTo(c[0] + c[2] * 14, c[1]); sg.lineTo(c[0], c[1]); sg.lineTo(c[0], c[1] + c[3] * 14); sg.stroke();
+        });
+        sg.restore();
+      } else {
       sg.save(); sg.translate(lay.ox, lay.oy); sg.scale(lay.f, lay.f); sg.globalAlpha = a; sg.strokeStyle = ink; sg.fillStyle = ink; sg.lineWidth = 2;
       [[17.6, 17.6, 1, 1], [VW - 17.6, 17.6, -1, 1], [17.6, VH - 17.6, 1, -1], [VW - 17.6, VH - 17.6, -1, -1]].forEach(function (c) {
         sg.beginPath(); sg.moveTo(c[0] + c[2] * 34, c[1]); sg.lineTo(c[0], c[1]); sg.lineTo(c[0], c[1] + c[3] * 34); sg.stroke();
@@ -199,6 +233,7 @@ function camera3d() {
       sg.lineWidth = 1; sg.strokeRect(VW / 2 - 32, VH / 2 - 32, 64, 64);
       sg.globalAlpha = a * 0.5; sg.beginPath(); sg.moveTo(VW / 2, VH / 2 - 40); sg.lineTo(VW / 2, VH / 2 + 40); sg.moveTo(VW / 2 - 40, VH / 2); sg.lineTo(VW / 2 + 40, VH / 2); sg.stroke();
       sg.restore();
+      }
     }
     screenTex.needsUpdate = true;
   }
@@ -461,7 +496,7 @@ function camera3d() {
   function screenTarget() {
     var t = Math.tan(FOV * Math.PI / 360);
     var D = 3.38 * (lay.rw / SW) / (2 * t * aspect);   // the page-shaped part of the screen exactly fills the window
-    return { x: 0.7, y: 0.7, z: cam.position.z - D - 3.925 };
+    return { x: lcdX + rig.position.x, y: -(lcdY + rig.position.y), z: cam.position.z - D + (BZ - 0.105 + rig.position.z) };   // aimed from the real position of the screen on the camera body
   }
   var mouse = { k: 1 };
   function aim(x, y) { seen = true; tx = (x / window.innerWidth - 0.5) * 2; ty = (y / window.innerHeight - 0.5) * 2; }
@@ -505,7 +540,6 @@ function camera3d() {
        .from(rig.rotation, { y: -0.75, duration: lensEnd + 0.4, ease: 'power2.inOut' }, 0);
 
   if (reduce) { build.progress(1); placeStatic(); }
-  else if (small) { placeStatic(); build.timeScale(3); build.play(); }   // phones: it assembles right in the hero
 
   // ---- render loop ----
   var clock = new T.Clock(), lastT = performance.now(), sumT = 0, nFrames = 0;
@@ -513,7 +547,8 @@ function camera3d() {
   function frame() {
     requestAnimationFrame(frame);
     if (canvas.style.visibility === "hidden" || document.hidden) { lastT = performance.now(); return; }   // nothing is drawn once the camera has flown into the page
-    var nowT = performance.now(); sumT += nowT - lastT; lastT = nowT;
+    var nowT = performance.now(), ddt = nowT - lastT; sumT += ddt; lastT = nowT;
+    var lf = 1 - Math.pow(0.93, Math.min(ddt, 250) / 16.67);   // smoothing that does not depend on the frame rate
     if (++nFrames === 40) {   // too slow? render fewer pixels instead of stuttering the whole page
       if (sumT / 40 > 26 && dpr > 0.75) { dpr = Math.max(0.75, dpr - 0.25); renderer.setPixelRatio(dpr); size(); }
       sumT = 0; nFrames = 0;
@@ -522,8 +557,8 @@ function camera3d() {
     var gx = seen ? tx : Math.sin(t * 0.6) * 0.5, gy = seen ? ty : Math.sin(t * 0.45) * 0.3;
     if (reduce) { gx = 0; gy = 0; }
     var k = mouse.k;
-    tilt.rotation.y += (BASE.y + gx * 0.7 * k - tilt.rotation.y) * 0.07;
-    tilt.rotation.x += (BASE.x + gy * 0.4 * k - tilt.rotation.x) * 0.07;
+    tilt.rotation.y += (BASE.y + gx * 0.7 * k - tilt.rotation.y) * lf;
+    tilt.rotation.x += (BASE.x + gy * 0.4 * k - tilt.rotation.x) * lf;
     tilt.position.y = ((reduce ? 0 : Math.sin(t * 1.1) * 0.08) + yOff) * k;
     if (journey.rotation.y < -0.9 && (Math.abs(screenState.p - shownP) > 0.0004 || t - shownT > 0.4)) { shownP = screenState.p; shownT = t; paintScreen(t); }   // the screen only repaints while it can be seen
     renderer.render(scene, cam);
@@ -587,7 +622,8 @@ mm.add({
   var intro = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
   intro.from('.hero .eyebrow', { autoAlpha: 0, y: 12, duration: 0.7 }, 0)
        .from('.wm .w', { yPercent: 110, duration: 0.9, stagger: 0.06 }, 0.1)
-       .from('.hero-foot, .scroll-hint', { autoAlpha: 0, y: 16, duration: 0.8, stagger: 0.1 }, 0.5);
+       .from('.hero-foot > *', { autoAlpha: 0, y: 16, duration: 0.8, stagger: 0.1 }, 0.5)   // the children, so the scroll fade-out below owns the container
+       .from('.scroll-hint', { y: 16, duration: 0.8 }, 0.6);
   if (window.siteReady) { intro.play(); }
   else {
     var go = function () { intro.play(); };
@@ -613,9 +649,8 @@ mm.add({
         builtW = W;
         fw = small ? Math.round(W * 0.22) : Math.round(Math.max(150, Math.min(250, W * 0.15))); fh = Math.round(fw * 1.08);
         var step = fw * 0.96, per = Math.ceil((W + fw * 3) / step) + 1;
-        var hc = hero.querySelector('.hero-copy'), hf = hero.querySelector('.hero-foot'), bTop = hc.offsetTop + hc.offsetHeight, bH = hf.offsetTop - bTop;   // the free band the camera sits in
         for (var s = 0; s < 2; s++) {
-          var strip = { dir: s ? 1 : -1, speed: s ? 58 : 76, off: s * 200, phase: s * Math.PI, y: s ? 0.7 : 0.32, yPx: (small && bH > 60) ? bTop + bH * (s ? 0.74 : 0.26) : null, step: step, frames: [] };
+          var strip = { dir: s ? 1 : -1, speed: s ? 58 : 76, off: s * 200, phase: s * Math.PI, y: s ? 0.7 : 0.32, yPx: null, step: step, frames: [] };
           for (var i = 0; i < per; i++) {
             var f = document.createElement('div'); f.className = 'fr'; f.style.width = fw + 'px'; f.style.height = fh + 'px';
             f.style.padding = Math.round(fh * 0.13) + 'px 0';
@@ -632,7 +667,7 @@ mm.add({
         var now = performance.now(), dt = Math.min(0.1, (now - last) / 1000); last = now;
         if (!active || !built || document.hidden) return;
         var t = now / 1000, W = window.innerWidth, H = window.innerHeight;
-        var amp = small ? fh * 0.12 : H * (0.09 + 0.06 * prog), k = Math.PI * 2 / (W * 2), boost = 1 + prog * 1.4;
+        var amp = H * (0.08 + 0.06 * prog), k = Math.PI * 2 / (W * 2), boost = 1 + prog * 1.4;
         for (var s = 0; s < strips.length; s++) {
           var st = strips[s], cy = st.yPx != null ? st.yPx : st.y * H;
           st.off += st.dir * st.speed * boost * dt;
@@ -654,20 +689,20 @@ mm.add({
       cleanups.push(function () { gsap.ticker.remove(update); window.removeEventListener('resize', onResize); document.removeEventListener('site:ready', start); reelEl.textContent = ''; built = false; });
       return { set: function (p) { prog = p; active = p > 0.02 && p < 0.93; } };
     })();
-    if (!small) {
     gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: { trigger: hero, start: 'top top', end: '+=330%', pin: true, scrub: 0.7, invalidateOnRefresh: true, onUpdate: function (self) { reel.set(self.progress); } }
     })
-      .fromTo('.hero-copy, .hero-foot, .scroll-hint', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -40, duration: 0.16, immediateRender: false }, 0)
+      .fromTo('.hero-copy, .hero-foot', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -40, duration: 0.16, immediateRender: false }, 0)
+      .fromTo('.scroll-hint', { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.16, immediateRender: false }, 0)
       .to('.reel', { autoAlpha: 0.95, duration: 0.14 }, 0.05)                       // photos start to drift in as the words fade
       .to('.reel', { autoAlpha: 0, duration: 0.1 }, 0.8)                             // and leave before the screen takes over
       .to(cam.mouse, { k: 0, duration: 0.2 }, 0)
       .to(cam.screen, { p: 1, duration: 0.5, ease: "none" }, 0.2)                    // the rear screen scrolls from the hero down to the first section
       .to(jr.rotation, { y: -1.45, duration: 0.3, ease: "power2.inOut" }, 0.02)       // turns to the side of the screen
-      .to(jr.position, { x: 1.5, duration: 0.3, ease: "power2.inOut" }, 0.02)
+      .to(jr.position, { x: small ? -0.55 : 1.5, duration: 0.3, ease: "power2.inOut" }, 0.02)
       .to(jr.rotation, { y: -Math.PI, duration: 0.3, ease: "power2.inOut" }, 0.32)    // lens turns away, the screen faces you
-      .to(jr.position, { x: 0.7, y: 0.7, duration: 0.3, ease: "power2.inOut" }, 0.32)
+      .to(jr.position, { x: function () { return cam.screenTarget().x; }, y: function () { return cam.screenTarget().y; }, duration: 0.3, ease: "power2.inOut" }, 0.32)
       .to(cam.pose, { y: 0, x: 0, duration: 0.22, ease: "power2.inOut" }, 0.4)       // square up to the screen
       .to(jr.position, { z: function () { return cam.screenTarget().z; }, duration: 0.3, ease: "power2.inOut" }, 0.62)   // and zoom in until the screen fills the page
       .to(cam.screen, { hud: 0, duration: 0.07, ease: "none" }, 0.88)                  // the screen's own readouts hand over to the real ones
@@ -675,8 +710,8 @@ mm.add({
       .to(vf, { autoAlpha: 1, duration: 0.08 }, 0.88)                                    // the viewfinder takes over
       .to(".flash", { opacity: 0.25, duration: 0.02 }, 0.955)
       .to(".flash", { opacity: 0, duration: 0.03 }, 0.975)
-      .to(".cam3d", { autoAlpha: 0, duration: 0.03 }, 0.97)                            // the zoomed screen dissolves into the real page, same layout
-      .fromTo(".hero", { backgroundColor: "rgba(239,227,200,1)" }, { backgroundColor: "rgba(239,227,200,0)", duration: 0.03, immediateRender: false }, 0.97);
+      .to(".cam3d", { autoAlpha: 0, duration: 0.015 }, 0.985)                            // the zoomed screen dissolves into the real page, same layout
+      .fromTo(".hero", { backgroundColor: "rgba(239,227,200,1)" }, { backgroundColor: "rgba(239,227,200,0)", duration: 0.015, immediateRender: false }, 0.985);
 
     // viewfinder readouts follow the page: timecode from scroll, exposure from the section on screen
     // the bottom row of the viewfinder steps aside when the footer arrives, so the two never overlap
@@ -714,12 +749,6 @@ mm.add({
       };
       ScrollTrigger.create({ trigger: sec, start: 'top 55%', end: 'bottom 55%', onEnter: set, onEnterBack: set });
     });
-    } else {
-      // phones and tablets: the film strips drift behind the camera, and the camera slowly turns as the hero scrolls away
-      ScrollTrigger.create({ trigger: hero, start: 'top bottom', end: 'bottom top', onToggle: function (self) { reel.set(self.isActive ? 0.25 : 0); } });
-      gsap.to(reelEl, { autoAlpha: 0.95, duration: 1.2, delay: 1 });
-      gsap.fromTo(cam.journey.rotation, { y: 0 }, { y: -1.3, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 } });
-    }
   }
 
   // ===== Scroll: what we capture, one subject at a time =====
@@ -749,6 +778,9 @@ mm.add({
       }
     });
     cleanups.push(function () { cap.classList.remove('pinned', 'after-hero'); });
+  } else if (cam) {   // phones: the section starts right under the hero, so the zoom lands on its top
+    cap.classList.add('after-hero');
+    cleanups.push(function () { cap.classList.remove('after-hero'); });
   }
 
   // ===== Scroll: gallery slides sideways =====
