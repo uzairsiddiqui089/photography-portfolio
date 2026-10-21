@@ -3,7 +3,7 @@ var root = document.documentElement;
 function pad(n) { return ('0' + n).slice(-2); }
 function pad3(n) { return ('00' + n).slice(-3); }
 var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-var small = window.innerWidth < 700;   // phones: a finished camera in the hero, no build-up and no flying journey
+var small = window.innerWidth < 900;   // phones and tablets: a finished camera in the hero, no build-up and no flying journey
 
 // ---------- Static setup (works without any library) ----------
 document.querySelectorAll('a[href="#"]').forEach(function (a) {
@@ -32,6 +32,7 @@ setTimeout(finish, 8000);   // safety net: never trap the visitor behind the int
 
 if (!(window.gsap && window.ScrollTrigger)) { finish(); return; }   // page still works without GSAP
 gsap.registerPlugin(ScrollTrigger);
+gsap.ticker.lagSmoothing(0);   // keep animations on the clock: a slow device must not stretch the intro out for minutes
 ScrollTrigger.config({ ignoreMobileResize: true });   // phone address bars must not re-measure the pins
 
 // =====================================================================
@@ -550,6 +551,7 @@ var cam = camera3d();
     gsap.to(loader, { autoAlpha: 0, duration: 0.4, delay: 0.1, ease: 'power2.inOut', onComplete: finish });
   });
   build.play();
+  setTimeout(function () { if (build.progress() < 1) build.progress(1); }, 4500);   // never let a slow device leave the camera half-built
   loader.querySelector('.ld-skip').addEventListener('click', function () { build.timeScale(8); });
 })();
 
