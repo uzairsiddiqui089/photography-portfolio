@@ -339,3 +339,34 @@ footer { margin-top: 0; padding: 1.5rem var(--pad); border-top: 1px solid var(--
   .proc-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tile:last-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
 }
+
+/* ---------- Phones: nothing overlaps, nothing is cut off ---------- */
+@media (max-width: 640px) {
+  .site-header { padding: 1rem var(--pad); }
+  .site-header nav a:not(.nav-cta) { display: none; }
+  .logo { font-size: 1.05rem; }
+  .logo svg { width: 1.4rem; height: 1.4rem; }
+  .hero { padding-top: 4.6rem; }
+  .hero h1 { font-size: 1.7rem; }
+  .hero-copy .eyebrow { display: block; font-size: 0.7rem; letter-spacing: 0.1em; }
+  .hero-foot p { font-size: 0.98rem; }
+  .vf .tl, .vf .tr, .vf .bc { display: none; }   /* the viewfinder keeps its corners but no text over your content */
+  .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .svc-body { padding: 0.8rem; }
+  .svc h3 { font-size: 1.3rem; }
+  .svc p { font-size: 0.82rem; }
+  .svc-go { padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-top: 0.4rem; }
+  .tile h3 { font-size: 1.25rem; }
+  .tile p { font-size: 0.85rem; }
+  .work-head { flex-direction: column; align-items: flex-start; }
+  .work-side { align-items: flex-start; }
+  .cta-card { height: auto; min-height: var(--h); }
+  .contact-actions .btn { width: 100%; text-align: center; }
+  footer { flex-direction: column; gap: 0.4rem; }
+}
+@media (max-width: 640px) {
+  .vf .corner { width: 14px; height: 14px; }
+  .vf .c1 { left: 0.3rem; top: 0.3rem; } .vf .c2 { right: 0.3rem; top: 0.3rem; }
+  .vf .c3 { left: 0.3rem; bottom: 0.3rem; } .vf .c4 { right: 0.3rem; bottom: 0.3rem; }
+  .track { scroll-padding-left: var(--pad); }
+}

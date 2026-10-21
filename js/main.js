@@ -416,13 +416,23 @@ function camera3d() {
   cameraG.add(body, topPlate, grip, prism, topCtl, mount, rear, lens);
 
   // ---- sizing: keep the camera a steady share of the screen ----
-  var staticMode = false, aspect = 1;
+  var staticMode = false, aspect = 1, yOff = 0;   // yOff: how far the camera sits below the screen centre on phones, so it fits between the text blocks
   function size() {
     var w = staticMode ? hero.clientWidth : window.innerWidth, h = staticMode ? hero.clientHeight : window.innerHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false); aspect = w / h; cam.aspect = aspect; cam.updateProjectionMatrix();
     // wide screens: text sits left and right, the camera gets the whole middle
-    var Hv = (w >= 900 && aspect >= 1.25) ? Math.max(7.6 / (0.34 * aspect), 4.4 / 0.46) : Math.max(7.6 / (0.78 * aspect), 4.4 / 0.24);
+    var Hv, wide = w >= 900 && aspect >= 1.25;
+    yOff = 0;
+    if (wide) { Hv = Math.max(7.6 / (0.34 * aspect), 4.4 / 0.46); }
+    else {
+      Hv = Math.max(7.6 / (0.78 * aspect), 4.4 / 0.24);
+      var hc = hero.querySelector(".hero-copy"), hf = hero.querySelector(".hero-foot");
+      if (hc && hf && !staticMode) {   // fit the camera in the free band between the headline and the buttons
+        var top = hc.offsetTop + hc.offsetHeight + 14, band = hf.offsetTop - 14 - top;
+        if (band > 90) { Hv = Math.max(7.6 / (0.78 * aspect), 4.4 * h / (0.92 * band)); yOff = -((top + band / 2) - h / 2) * Hv / h; }
+      }
+    }
     cam.position.set(0, 0, Hv / (2 * Math.tan(FOV * Math.PI / 360)));
     cam.lookAt(0, 0, 0);
   }
@@ -432,6 +442,8 @@ function camera3d() {
     size();
   }
   size();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(size);   // text sizes change once the fonts arrive, so measure again
+  document.addEventListener('site:ready', size, { once: true });
   var lastW = window.innerWidth, lastH = window.innerHeight;
   window.addEventListener('resize', function () {   // ignore the phone address bar growing and shrinking while you scroll
     var w = window.innerWidth, h = window.innerHeight;
@@ -508,7 +520,7 @@ function camera3d() {
     var k = mouse.k;
     tilt.rotation.y += (BASE.y + gx * 0.7 * k - tilt.rotation.y) * 0.07;
     tilt.rotation.x += (BASE.x + gy * 0.4 * k - tilt.rotation.x) * 0.07;
-    tilt.position.y = reduce ? 0 : Math.sin(t * 1.1) * 0.08 * k;
+    tilt.position.y = ((reduce ? 0 : Math.sin(t * 1.1) * 0.08) + yOff) * k;
     if (journey.rotation.y < -0.9 && (Math.abs(screenState.p - shownP) > 0.0004 || t - shownT > 0.4)) { shownP = screenState.p; shownT = t; paintScreen(t); }   // the screen only repaints while it can be seen
     renderer.render(scene, cam);
   }
