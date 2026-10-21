@@ -8,10 +8,10 @@
 <meta name="theme-color" content="#efe3c8">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27 fill=%27none%27 stroke=%27%230b0b0b%27 stroke-width=%272%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2713%27/%3E%3Cpath d=%27M16 3l6 10.4M29 16H17M22 28.4L16 18M10 28.4l6-10.4M3 16h12M10 3.6L16 14%27/%3E%3C/svg%3E">
 <script>
-  // Show the camera build-up only when motion is welcome. The page works without it.
+  // Show the camera build-up only on larger screens where motion is welcome. Phones get the page straight away.
   (function () {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduce) document.documentElement.classList.add('is-loading');
+    if (!reduce && window.innerWidth >= 700) document.documentElement.classList.add('is-loading');
   })();
 </script>
 

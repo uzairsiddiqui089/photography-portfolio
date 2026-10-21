@@ -3,6 +3,7 @@ var root = document.documentElement;
 function pad(n) { return ('0' + n).slice(-2); }
 function pad3(n) { return ('00' + n).slice(-3); }
 var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var small = window.innerWidth < 700;   // phones: a finished camera in the hero, no build-up and no flying journey
 
 // ---------- Static setup (works without any library) ----------
 document.querySelectorAll('a[href="#"]').forEach(function (a) {
@@ -428,7 +429,7 @@ function camera3d() {
     else {
       Hv = Math.max(7.6 / (0.78 * aspect), 4.4 / 0.24);
       var hc = hero.querySelector(".hero-copy"), hf = hero.querySelector(".hero-foot");
-      if (hc && hf && !staticMode) {   // fit the camera in the free band between the headline and the buttons
+      if (hc && hf) {   // fit the camera in the free band between the headline and the buttons
         var top = hc.offsetTop + hc.offsetHeight + 14, band = hf.offsetTop - 14 - top;
         if (band > 90) { Hv = Math.max(7.6 / (0.78 * aspect), 4.4 * h / (0.92 * band)); yOff = -((top + band / 2) - h / 2) * Hv / h; }
       }
@@ -501,7 +502,7 @@ function camera3d() {
        .call(function () { say('Ready'); }, null, lensEnd + 0.2)
        .from(rig.rotation, { y: -0.75, duration: lensEnd + 0.4, ease: 'power2.inOut' }, 0);
 
-  if (reduce) { build.progress(1); placeStatic(); }
+  if (reduce || small) { build.progress(1); placeStatic(); }
 
   // ---- render loop ----
   var clock = new T.Clock(), lastT = performance.now(), sumT = 0, nFrames = 0;
@@ -593,7 +594,7 @@ mm.add({
   // ===== Scroll journey: the camera turns, flies into the screen, and you look through the lens =====
   var hero = document.querySelector('.hero');
   var vf = document.querySelector('.vf'), vig = document.querySelector('.vig');
-  if (cam) {
+  if (cam && !small) {
     var jr = cam.journey;
     // ----- the reel: two connected film strips that wind across the background like snakes while the camera turns -----
     var reelEl = hero.querySelector('.reel');
