@@ -1,0 +1,82 @@
+/* ===== Extra motion layer: bokeh, grain, cursor, tilt, marquee, iris transition ===== */
+
+/* iris page transition: dark cover that is in place before the page paints */
+html.fx-cover::before { content: ""; position: fixed; inset: 0; background: #0b0b0b; z-index: 300; animation: fx-safety 0.01s 4s forwards; }
+@keyframes fx-safety { to { opacity: 0; visibility: hidden; } }
+.fx-iris { position: fixed; inset: 0; z-index: 300; background: #0b0b0b; pointer-events: none; display: grid; place-items: center; clip-path: circle(0% at 50% 50%); }
+.fx-iris svg { width: min(22vw, 120px); height: auto; opacity: 0; stroke: #efe3c8; fill: none; stroke-width: 1.6; }
+.fx-iris.on svg { opacity: 1; animation: fx-spin 1.2s linear infinite; }
+@keyframes fx-spin { to { transform: rotate(360deg); } }
+
+/* film grain + warm light leak, over everything, never blocks clicks */
+.fx-grain { position: fixed; inset: -50%; z-index: 250; pointer-events: none; opacity: 0.085; mix-blend-mode: multiply; background-size: 160px 160px; animation: fx-grain 0.9s steps(6) infinite; }
+@keyframes fx-grain { 0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -4%); } 60% { transform: translate(-4%, -2%); } 80% { transform: translate(3%, 3%); } 100% { transform: translate(0, 0); } }
+.fx-leak { position: fixed; inset: -10%; z-index: 249; pointer-events: none; mix-blend-mode: soft-light; opacity: 0.55;
+  background: radial-gradient(40vmax 30vmax at 8% 12%, rgba(255, 150, 60, 0.55), transparent 70%), radial-gradient(36vmax 28vmax at 96% 88%, rgba(255, 90, 90, 0.4), transparent 70%);
+  animation: fx-leak 16s ease-in-out infinite alternate; }
+@keyframes fx-leak { 0% { transform: translate3d(0, 0, 0) scale(1); } 100% { transform: translate3d(3%, -2%, 0) scale(1.12); } }
+
+/* bokeh behind the hero text */
+.fx-bokeh { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+/* custom cursor: lens ring and dot (mouse only) */
+.fx-cur, .fx-dot { position: fixed; left: 0; top: 0; z-index: 280; pointer-events: none; opacity: 0; transition: opacity 0.3s; will-change: transform; }
+.fx-cur { width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 1.5px solid var(--accent, #a8552a); display: grid; place-items: center; transition: opacity 0.3s, width 0.3s, height 0.3s, margin 0.3s, background 0.3s, border-color 0.3s; }
+.fx-cur span { font: 700 0.62rem/1 var(--body, sans-serif); letter-spacing: 0.14em; text-transform: uppercase; color: #fff; opacity: 0; transition: opacity 0.2s; }
+.fx-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--accent, #a8552a); }
+html.fx-mouse .fx-cur, html.fx-mouse .fx-dot { opacity: 1; }
+.fx-cur.big { width: 84px; height: 84px; margin: -42px 0 0 -42px; background: rgba(168, 85, 42, 0.92); border-color: transparent; }
+.fx-cur.big span { opacity: 1; }
+.fx-cur.click { animation: fx-blink 0.35s ease-out; }
+@keyframes fx-blink { 0% { box-shadow: 0 0 0 0 rgba(168, 85, 42, 0.55); } 100% { box-shadow: 0 0 0 26px rgba(168, 85, 42, 0); } }
+
+/* tilt + glare on pictures */
+.fx-tilt { transform-style: preserve-3d; will-change: transform; transition: transform 0.25s ease-out; }
+.fx-tilt.fx-reset { transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.fx-glare { position: absolute; inset: 0; pointer-events: none; z-index: 3; opacity: 0; transition: opacity 0.3s; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.38), transparent 55%); mix-blend-mode: soft-light; }
+.fx-tilt:hover > .fx-glare, .fx-hov:hover .fx-glare { opacity: 1; }
+.fx-persp { perspective: 900px; }
+
+/* scroll progress: a small iris that turns as you scroll */
+.fx-prog { position: fixed; right: 12px; top: 50%; translate: 0 -50%; z-index: 45; width: 42px; height: 42px; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity 0.6s; border: 0; background: none; padding: 0; cursor: pointer; }
+.fx-prog.on { opacity: 0.9; }
+.fx-prog svg { width: 100%; height: 100%; overflow: visible; }
+.fx-prog .ring { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.fx-prog .blades { fill: none; stroke: currentColor; stroke-width: 1.2; transform-origin: 50% 50%; }
+.fx-prog .base { fill: none; stroke: currentColor; stroke-width: 1; opacity: 0.25; }
+
+/* marquee ribbon between sections */
+.fx-marquee { position: relative; z-index: 3; overflow: hidden; background: var(--dark, #2b2012); color: var(--bg, #efe3c8); padding: clamp(1.4rem, 4vw, 3rem) 0; user-select: none; }
+.fx-row { overflow: hidden; white-space: nowrap; will-change: transform; }
+.fx-row + .fx-row { margin-top: clamp(0.8rem, 2vw, 1.4rem); }
+.fx-track { display: inline-flex; align-items: center; gap: clamp(1.2rem, 3vw, 2.6rem); will-change: transform; padding-right: clamp(1.2rem, 3vw, 2.6rem); }
+.fx-word { font-family: var(--display, serif); font-style: italic; font-size: clamp(3rem, 11vw, 9.5rem); line-height: 1; letter-spacing: -0.03em; }
+.fx-word.o { color: transparent; -webkit-text-stroke: 1.5px var(--bg, #efe3c8); }
+.fx-star { font-size: clamp(1.6rem, 5vw, 4rem); color: var(--accent, #a8552a); }
+.fx-th { flex: none; width: clamp(110px, 16vw, 210px); aspect-ratio: 4 / 5; background-size: cover; background-position: center; border-radius: 6px; filter: sepia(0.25) saturate(0.9); }
+
+/* headings: words rise out of a mask */
+.fxw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.16em; margin-bottom: -0.16em; }
+.fxw > i { display: inline-block; font-style: inherit; transform: translateY(112%); transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i, 0) * 70ms); }
+.fx-split.fx-in .fxw > i { transform: none; }
+.fx-fadeup { opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.25s, transform 0.8s 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.fx-fadeup.fx-in { opacity: 1; transform: none; }
+
+/* work page: pictures rise in, and pop back when filtered */
+.fx-up { opacity: 0; transform: translateY(40px) scale(0.97); }
+.fx-up.fx-in { opacity: 1; transform: none; transition: opacity 0.8s, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: var(--d, 0ms); }
+.grid figure.fx-pop { animation: fx-pop 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: var(--d, 0ms); }
+@keyframes fx-pop { from { opacity: 0; transform: translateY(26px) scale(0.94); } to { opacity: 1; transform: none; } }
+.viewer.open img { animation: fx-zoom 0.55s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes fx-zoom { from { opacity: 0; transform: scale(0.86); filter: blur(10px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* phones, tablets: lighter, still alive */
+@media (max-width: 899px) {
+  .fx-grain { animation: none; opacity: 0.07; }
+  .fx-leak { opacity: 0.4; }
+  .fx-prog { width: 34px; height: 34px; right: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx-grain, .fx-leak, .fx-prog, .fx-marquee { display: none; }
+  .fxw > i, .fx-fadeup, .fx-up { transition: none; transform: none; opacity: 1; }
+}
