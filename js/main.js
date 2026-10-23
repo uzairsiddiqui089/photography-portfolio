@@ -593,12 +593,11 @@ var cam = camera3d();
     if (cam && !root.classList.contains('is-loading')) { /* reduced motion: already built */ }
     finish(); return;
   }
-  var num = loader.querySelector('.ld-num'), label = loader.querySelector('.ld-label');
-  cam.onSay(function (text) { label.textContent = text; });
+  var bar = loader.querySelector('.ld-line b');
   var build = cam.build;
-  build.eventCallback('onUpdate', function () { num.textContent = pad3(Math.round(Math.min(1, build.progress()) * 100)); });
+  build.eventCallback('onUpdate', function () { bar.style.transform = 'scaleX(' + Math.min(1, build.progress()).toFixed(3) + ')'; });
   build.eventCallback('onComplete', function () {
-    num.textContent = '100';
+    bar.style.transform = 'scaleX(1)';
     // the curtain lifts once the fonts and the first photos are ready (or after 3.5 seconds at most)
     var ready = Promise.all(critical.concat([document.fonts && document.fonts.ready].filter(Boolean)));
     Promise.race([ready, new Promise(function (r) { setTimeout(r, 3500); })]).then(function () {
