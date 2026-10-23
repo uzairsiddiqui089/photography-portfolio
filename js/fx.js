@@ -96,7 +96,7 @@ safe(function () {
 
 /* ---------- 4. Marquee ribbon (home) ---------- */
 safe(function () {
-  var before = D.getElementById('services'); if (!before || reduce) return;
+  var before = D.querySelector('footer'); if (!before || reduce) return;
   var words = ['Portrait', 'Fashion', 'Editorial', 'Documentary', 'Spaces'];
   var imgs = ['colour/portrait-lilac.webp', 'work-mask-series.jpg', 'colour/fashion-camel-coat.webp', 'work-concrete-silk.jpg', 'colour/editorial-teal-magenta.webp', 'capture-documentary.jpg', 'colour/beauty-gold.webp', 'work-quiet-ones.jpg', 'more-laughing.jpg', 'work-glass-house.jpg'];
   function row(html) { var r = mk('div', 'fx-row'), t = mk('div', 'fx-track', html + html); r.appendChild(t); return { r: r, t: t }; }

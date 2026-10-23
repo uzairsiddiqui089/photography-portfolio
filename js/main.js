@@ -846,11 +846,6 @@ mm.add({
     cleanups.push(function () { level.classList.remove('pinned'); });
   }
 
-  // ===== Scroll: the picture cards and tiles rise in one after another =====
-  ['.proc-tiles .tile', '.svc-grid .svc'].forEach(function (sel) {
-    gsap.from(sel, { y: 50, autoAlpha: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1, scrollTrigger: { trigger: sel.split(' ')[0], start: 'top 82%', once: true } });
-  });
-
   return function () { cleanups.forEach(function (fn) { fn(); }); };
 });
 
