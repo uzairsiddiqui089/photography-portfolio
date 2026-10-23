@@ -1,4 +1,4 @@
-/* ===== Extra motion layer: bokeh, grain, cursor, tilt, marquee, iris transition ===== */
+/* ===== Extra motion layer: bokeh, grain, cursor, tilt, iris transition ===== */
 
 /* iris page transition: dark cover that is in place before the page paints */
 html.fx-cover::before { content: ""; position: fixed; inset: 0; background: #0b0b0b; z-index: 300; animation: fx-safety 0.01s 4s forwards; }
@@ -45,16 +45,6 @@ html.fx-mouse .fx-cur, html.fx-mouse .fx-dot { opacity: 1; }
 .fx-prog .blades { fill: none; stroke: currentColor; stroke-width: 1.2; transform-origin: 50% 50%; }
 .fx-prog .base { fill: none; stroke: currentColor; stroke-width: 1; opacity: 0.25; }
 
-/* marquee ribbon between sections */
-.fx-marquee { position: relative; z-index: 3; overflow: hidden; background: var(--dark, #2b2012); color: var(--bg, #efe3c8); padding: clamp(1.4rem, 4vw, 3rem) 0; user-select: none; }
-.fx-row { overflow: hidden; white-space: nowrap; will-change: transform; }
-.fx-row + .fx-row { margin-top: clamp(0.8rem, 2vw, 1.4rem); }
-.fx-track { display: inline-flex; align-items: center; gap: clamp(1.2rem, 3vw, 2.6rem); will-change: transform; padding-right: clamp(1.2rem, 3vw, 2.6rem); }
-.fx-word { font-family: var(--display, serif); font-style: italic; font-size: clamp(3rem, 11vw, 9.5rem); line-height: 1; letter-spacing: -0.03em; }
-.fx-word.o { color: transparent; -webkit-text-stroke: 1.5px var(--bg, #efe3c8); }
-.fx-star { font-size: clamp(1.6rem, 5vw, 4rem); color: var(--accent, #a8552a); }
-.fx-th { flex: none; width: clamp(110px, 16vw, 210px); aspect-ratio: 4 / 5; background-size: cover; background-position: center; border-radius: 6px; filter: sepia(0.25) saturate(0.9); }
-
 /* headings: words rise out of a mask */
 .fxw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.16em; margin-bottom: -0.16em; }
 .fxw > i { display: inline-block; font-style: inherit; transform: translateY(112%); transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i, 0) * 70ms); }
@@ -77,6 +67,6 @@ html.fx-mouse .fx-cur, html.fx-mouse .fx-dot { opacity: 1; }
   .fx-prog { width: 34px; height: 34px; right: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fx-grain, .fx-leak, .fx-prog, .fx-marquee { display: none; }
+  .fx-grain, .fx-leak, .fx-prog { display: none; }
   .fxw > i, .fx-fadeup, .fx-up { transition: none; transform: none; opacity: 1; }
 }
