@@ -87,40 +87,15 @@ safe(function () {
   function kick() { if (!raf && visible && !D.hidden) raf = requestAnimationFrame(frame); }
   build();
   if ('ResizeObserver' in window) new ResizeObserver(function () { build(); }).observe(hero); else on(window, 'resize', build);
-  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; kick(); }).observe(hero);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { vis0 = e[0].isIntersecting; fade(); kick(); }).observe(hero);
   on(D, 'visibilitychange', kick);
+  var fadeT = false;   // the discs fade away as the camera journey begins, so they never sit on top of the gallery
+  function fade() { fadeT = false; var f = Math.max(0, Math.min(1, 1 - window.scrollY / (window.innerHeight * 0.9))); cv.style.opacity = f.toFixed(3); var was = visible; visible = f > 0.01 && vis0; if (visible && !was) kick(); }
+  var vis0 = true;
+  on(window, 'scroll', function () { if (!fadeT) { fadeT = true; requestAnimationFrame(fade); } }, { passive: true });
   on(window, 'pointermove', function (e) { tx = e.clientX / innerWidth - 0.5; ty = e.clientY / innerHeight - 0.5; }, { passive: true });
   on(window, 'deviceorientation', function (e) { if (e.gamma != null) { tx = Math.max(-0.5, Math.min(0.5, e.gamma / 60)); ty = Math.max(-0.5, Math.min(0.5, (e.beta - 45) / 90)); } }, { passive: true });
   kick();
-});
-
-/* ---------- 4. Marquee ribbon (home) ---------- */
-safe(function () {
-  var before = D.querySelector('footer'); if (!before || reduce) return;
-  var words = ['Portrait', 'Fashion', 'Editorial', 'Documentary', 'Spaces'];
-  var imgs = ['colour/portrait-lilac.webp', 'work-mask-series.jpg', 'colour/fashion-camel-coat.webp', 'work-concrete-silk.jpg', 'colour/editorial-teal-magenta.webp', 'capture-documentary.jpg', 'colour/beauty-gold.webp', 'work-quiet-ones.jpg', 'more-laughing.jpg', 'work-glass-house.jpg'];
-  function row(html) { var r = mk('div', 'fx-row'), t = mk('div', 'fx-track', html + html); r.appendChild(t); return { r: r, t: t }; }
-  var w = words.map(function (x, i) { return '<span class="fx-word' + (i % 2 ? ' o' : '') + '">' + x + '</span><span class="fx-star" aria-hidden="true">✶</span>'; }).join('');
-  var th = imgs.map(function (p) { return '<span class="fx-th" data-m="images/' + p + '"></span>'; }).join('');
-  var m = mk('div', 'fx-marquee'); m.setAttribute('aria-hidden', 'true');
-  var a = row(w), b = row(th); m.appendChild(a.r); m.appendChild(b.r);
-  before.parentNode.insertBefore(m, before);
-  var lazy = false;
-  function loadThumbs() { if (lazy) return; lazy = true; m.querySelectorAll('.fx-th').forEach(function (e) { e.style.backgroundImage = 'url(' + e.dataset.m + ')'; }); }
-  var A = [a, b].map(function (o, i) { return o.t.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-50%)' }], { duration: i ? 46000 : 38000, iterations: Infinity, direction: i ? 'reverse' : 'normal' }); });
-  var vis = false, lastY = scrollY, lastT = performance.now(), vel = 0, raf = 0;
-  function tick(t) {
-    raf = 0; var dt = Math.max(1, t - lastT), v = (scrollY - lastY) / dt * 1000; lastY = scrollY; lastT = t;
-    vel += (v - vel) * 0.12;
-    var s = Math.min(1, Math.abs(vel) / 2600), dir = vel < 0 ? -1 : 1;
-    A.forEach(function (an, i) { an.playbackRate = (1 + s * 9) * (dir < 0 && s > 0.05 ? -1 : 1) * (i ? 1 : 1); });
-    var sk = Math.max(-8, Math.min(8, vel / 260));
-    a.r.style.transform = 'skewX(' + (-sk) + 'deg)'; b.r.style.transform = 'skewX(' + sk + 'deg)';
-    if (vis) raf = requestAnimationFrame(tick);
-  }
-  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) {
-    vis = e[0].isIntersecting; if (vis) { loadThumbs(); A.forEach(function (x) { x.play(); }); lastY = scrollY; lastT = performance.now(); if (!raf) raf = requestAnimationFrame(tick); } else A.forEach(function (x) { x.pause(); });
-  }, { rootMargin: '200px' }).observe(m); else loadThumbs();
 });
 
 /* ---------- 5. Headings rise word by word; work-page pictures rise in ---------- */

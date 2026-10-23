@@ -101,12 +101,14 @@ function camera3d() {
   // The real first photo is shown on the screen too, but only when served over http(s). On a file:// page the browser treats the image as foreign and locks the whole screen texture, so we skip it there.
   var artImg = new Image(), artBad = window.location.protocol === 'file:';
   artImg.onload = function () { redrawSite(); };
-  if (!artBad) { critical.push(new Promise(function (r) { artImg.addEventListener('load', r); artImg.addEventListener('error', r); })); artImg.src = 'images/colour/portrait-lilac.webp'; }
+  if (!artBad) { critical.push(new Promise(function (r) { artImg.addEventListener('load', r); artImg.addEventListener('error', r); })); artImg.src = 'images/work-mask-series.jpg'; }
+  var wkImgs = {};
+  function wkImg(src) { if (!src || artBad) return null; var im = wkImgs[src]; if (!im) { im = wkImgs[src] = new Image(); im.onload = function () { redrawSite(); }; im.src = src; } return im; }
   function drawSite() {
     relayout();
     var g = siteC.getContext('2d'), serif = 'Fraunces, Georgia, serif', sans = 'Manrope, Arial, sans-serif';
     var VW = lay.VW, VH = lay.VH, pad = clampN(20, VW * 0.04, 56), INK = '#0b0b0b', MUTED = '#3d3a35';
-    function sec(i) { g.save(); g.fillStyle = '#efe3c8'; g.fillRect(0, i * SH, SW, SH); g.translate(lay.ox, i * SH + lay.oy); g.scale(lay.f, lay.f); g.beginPath(); g.rect(0, 0, VW, VH); g.clip(); }
+    function sec(i, bg) { g.save(); g.fillStyle = bg || '#efe3c8'; g.fillRect(0, i * SH, SW, SH); g.translate(lay.ox, i * SH + lay.oy); g.scale(lay.f, lay.f); g.beginPath(); g.rect(0, 0, VW, VH); g.clip(); }
     function txt(s, x, y, font, color, align, ls) {
       g.font = font; g.fillStyle = color; g.textAlign = align || 'left';
       if ('letterSpacing' in g) g.letterSpacing = ls || '0px';
@@ -119,9 +121,11 @@ function camera3d() {
       if (filled) { g.fillStyle = INK; g.fill(); } else { g.strokeStyle = 'rgba(11,11,11,0.25)'; g.lineWidth = 1; g.stroke(); }
       txt(label, x + w / 2, cy + 6, '700 17px ' + sans, filled ? '#efe3c8' : INK, 'center');
     }
-    function art(x, y, w, h) {   // the first photo on the page (or its gradient while it loads)
-      if (artImg.complete && artImg.naturalWidth && !artBad) {
-        g.drawImage(artImg, x, y, w, h);
+    function art(x, y, w, h, img) {   // a photo from the page (or its gradient while it loads)
+      img = img || artImg;
+      if (img.complete && img.naturalWidth && !artBad) {
+        var ir = img.naturalWidth / img.naturalHeight, rr = w / h, sw = ir > rr ? img.naturalHeight * rr : img.naturalWidth, sh = ir > rr ? img.naturalHeight : img.naturalWidth / rr;
+        g.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, x, y, w, h);
         g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 2; var bm = 19.2, bk = 26, bx = x + bm, by = y + bm, bx2 = x + w - bm, by2 = y + h - bm;
         g.beginPath();
         g.moveTo(bx, by + bk); g.lineTo(bx, by); g.lineTo(bx + bk, by); g.moveTo(bx2 - bk, by); g.lineTo(bx2, by); g.lineTo(bx2, by + bk);
@@ -143,6 +147,39 @@ function camera3d() {
       g.moveTo(X, Y2 - k); g.lineTo(X, Y2); g.lineTo(X + k, Y2); g.moveTo(X2 - k, Y2); g.lineTo(X2, Y2); g.lineTo(X2, Y2 - k); g.stroke();
     }
 
+    function workPage() {   // page 1: Recent work, read from the real section so the zoom lands exactly on it
+      sec(1, '#e3d4b0');
+      var wk = document.querySelector('.work');
+      if (wk) {
+        var top0 = wk.getBoundingClientRect().top;
+        var rc = function (el) { var r = el.getBoundingClientRect(); return { x: r.left, y: r.top - top0, w: r.width, h: r.height }; };
+        var put = function (el, str, family, color, align) {
+          if (!el) return;
+          var r = rc(el), cs = getComputedStyle(el), fs = parseFloat(cs.fontSize), ls = cs.letterSpacing === 'normal' ? '0px' : cs.letterSpacing;
+          var x = align === 'right' ? r.x + r.w : align === 'center' ? r.x + r.w / 2 : r.x;
+          txt(str, x, r.y + r.h / 2 + fs * 0.33, cs.fontWeight + ' ' + fs + 'px ' + family, color, align, ls);
+        };
+        put(wk.querySelector('#work-h'), 'Recent work', serif, INK);
+        put(wk.querySelector('.work-head .lead'), 'Five projects from the last year. Scroll sideways.', sans, MUTED);
+        var bt = wk.querySelector('.work-side .btn');
+        if (bt) {
+          var rb = rc(bt), rd = rb.h / 2;
+          g.beginPath(); g.moveTo(rb.x + rd, rb.y); g.arcTo(rb.x + rb.w, rb.y, rb.x + rb.w, rb.y + rb.h, rd); g.arcTo(rb.x + rb.w, rb.y + rb.h, rb.x, rb.y + rb.h, rd); g.arcTo(rb.x, rb.y + rb.h, rb.x, rb.y, rd); g.arcTo(rb.x, rb.y, rb.x + rb.w, rb.y, rd); g.fillStyle = INK; g.fill();
+          var bs = getComputedStyle(bt); txt('View full portfolio', rb.x + rb.w / 2, rb.y + rb.h / 2 + parseFloat(bs.fontSize) * 0.33, bs.fontWeight + ' ' + bs.fontSize + ' ' + sans, '#efe3c8', 'center');
+        }
+        put(wk.querySelector('.counter'), 'frame 01 of 05', sans, MUTED, 'right');
+        wk.querySelectorAll('.panel:not(.panel-cta)').forEach(function (pn) {
+          var sh = pn.querySelector('.shot'); if (!sh) return;
+          var r = rc(sh); if (r.x > VW) return;
+          var src = sh.getAttribute('data-bg'); if (!src) { var u = /url\(["']?([^"')]+)/.exec(getComputedStyle(sh).backgroundImage || ''); src = u && u[1]; }
+          art(r.x, r.y, r.w, r.h, src && /work-mask-series/.test(src) ? artImg : wkImg(src));
+          var h3 = pn.querySelector('.cap h3'), sp = pn.querySelector('.cap span');
+          if (h3) put(h3, h3.textContent, serif, INK);
+          if (sp) put(sp, sp.textContent, sans, MUTED, 'right');
+        });
+      }
+      g.restore();
+    }
     if (VW < 900) {   // phones and tablets: the same two pages, laid out the way a narrow screen shows them
       var P = Math.max(20, Math.min(56, VW * 0.04)), bx0 = VW - P - 112;
       sec(0);
@@ -157,17 +194,7 @@ function camera3d() {
       txt('hand retouching.', P, VH - 124, '400 15.7px ' + sans, MUTED);
       pill(P, VH - 58, 'See the work', false, true);
       g.restore();
-      sec(1);
-      var h2p = 32, ah2 = VH * 0.46;   // the page as it is when What we capture is pinned on a narrow screen
-      txt('What we capture', P, 108, '400 ' + h2p + 'px ' + serif, INK, 'left', (-0.02 * h2p) + 'px');
-      txt('Five kinds of pictures, one way of looking.', P, 150, '400 16px ' + sans, MUTED);
-      txt('01', P, 188, '500 11.2px ' + sans, '#a8552a', 'left', '1.8px');
-      txt('Portraits', P, 226, '400 38.4px ' + serif, INK, 'left', '-1.15px');
-      txt('The moment someone stops', P, 258, '400 16px ' + sans, MUTED);
-      txt('performing and simply looks back', P, 284, '400 16px ' + sans, MUTED);
-      txt('at you.', P, 310, '400 16px ' + sans, MUTED);
-      art(P, 336, ah2 * 0.8, ah2);
-      g.restore();
+      workPage();
       return;
     }
     // page 0: the hero (text left and right, the camera sits in the middle)
@@ -175,7 +202,7 @@ function camera3d() {
     g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.arc(pad + 12, 36, 10.5, 0, 7); g.stroke();
     txt('Quiet Aperture', pad + 32, 43, '600 18.4px ' + serif, INK);
     txt('Capture', VW - pad - 440, 42, '500 17px ' + sans, MUTED); txt('Work', VW - pad - 340, 42, '500 17px ' + sans, MUTED);
-    txt('Process', VW - pad - 270, 42, '500 17px ' + sans, MUTED); txt('Contact', VW - pad - 190, 42, '500 17px ' + sans, MUTED);
+    txt('Contact', VW - pad - 270, 42, '500 17px ' + sans, MUTED);
     txt('Booking from November', VW - pad, 42, '500 15px ' + sans, INK, 'right');
     var fs = clampN(28.8, VW * 0.03, 51.2), lh = fs * 1.06, y0 = VH * 0.5 - lh * 0.9;
     txt('PORTRAIT AND FASHION STUDIO, LISBON', pad, y0 - lh - 14, '500 12.5px ' + sans, '#a8552a', 'left', '2px');
@@ -185,21 +212,7 @@ function camera3d() {
     pill(VW - pad, VH * 0.5 + 40, 'See the work', false);
     g.restore();
 
-    // page 1: what we capture, as it appears when the page is pinned
-    sec(1);
-    var h2 = clampN(32, VW * 0.04, 54.4);
-    txt('What we capture', pad, VH * 0.195, '400 ' + h2 + 'px ' + serif, INK, 'left', (-0.02 * h2) + 'px');
-    txt('Five kinds of pictures, one way of looking.', pad, VH * 0.267, '400 17px ' + sans, MUTED);
-    g.font = '500 14.4px ' + sans; var tail = ' / 05', tw = g.measureText(tail).width;
-    txt(tail, VW - pad, VH * 0.247, '400 14.4px ' + sans, MUTED, 'right'); txt('01', VW - pad - tw, VH * 0.247, '500 14.4px ' + sans, INK, 'right');
-    g.fillStyle = 'rgba(11,11,11,0.25)'; g.fillRect(VW - pad - 144, VH * 0.278, 144, 2); g.fillStyle = '#a8552a'; g.fillRect(VW - pad - 144, VH * 0.278, 28, 2);
-    txt('01', pad, VH * 0.468, '500 12.5px ' + sans, '#a8552a', 'left', '2px');
-    var big = clampN(41.6, VW * 0.065, 96);
-    txt('Portraits', pad, VH * 0.622, '400 ' + big + 'px ' + serif, INK, 'left', (-0.03 * big) + 'px');
-    txt('The moment someone stops performing and', pad, VH * 0.703, '400 18.4px ' + sans, MUTED);
-    txt('simply looks back at you.', pad, VH * 0.749, '400 18.4px ' + sans, MUTED);
-    var ah = VH * 0.56, aw = ah * 0.8; art(VW - pad - aw, VH * 0.319, aw, ah);
-    g.restore();
+    workPage();
   }
   drawSite();
   var scrC = document.createElement('canvas'); scrC.width = SW; scrC.height = SH; var sg = scrC.getContext('2d');
@@ -241,6 +254,7 @@ function camera3d() {
   paintScreen(0);
   var relayoutT;
   function redrawSite() { drawSite(); shownP = -1; }
+  window.__qaRedraw = redrawSite;
   var siteW = window.innerWidth, siteH = window.innerHeight;
   window.addEventListener('resize', function () {
     if (window.innerWidth === siteW && Math.abs(window.innerHeight - siteH) < 120) return;
@@ -775,45 +789,13 @@ mm.add({
     });
   }
 
-  // ===== Scroll: what we capture, one subject at a time =====
-  var cap = document.querySelector('.capture');
-  if (pin) {
-    var subs = gsap.utils.toArray('.subject');
-    var total = subs.length, cur = 0;
-    var count = cap.querySelector('.cap-count b'), bar = cap.querySelector('.cap-bar i');
-    cap.classList.add('pinned', 'after-hero');
-    gsap.set(subs, { autoAlpha: 0 });
-    gsap.set(subs[0], { autoAlpha: 1 });
-    var show = function (i) {
-      var prev = subs[cur], next = subs[i];
-      gsap.killTweensOf([prev, next]);
-      gsap.to(prev, { autoAlpha: 0, y: -30, duration: 0.35, ease: 'power2.in' });
-      gsap.fromTo(next, { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.15 });
-      gsap.fromTo(next.querySelector('.subject-art'), { scale: 1.12, clipPath: 'inset(0 0 100% 0)' }, { scale: 1, clipPath: 'inset(0 0 0% 0)', duration: 0.9, ease: 'power3.out', delay: 0.15 });
-      count.textContent = pad(i + 1);
-      cur = i;
-    };
-    ScrollTrigger.create({
-      trigger: cap, start: 'top top', end: '+=' + (total * 70) + '%', pin: true,
-      onUpdate: function (self) {
-        var i = Math.min(total - 1, Math.floor(self.progress * total));
-        if (i !== cur) show(i);
-        gsap.set(bar, { scaleX: self.progress });
-      }
-    });
-    cleanups.push(function () { cap.classList.remove('pinned', 'after-hero'); });
-  } else if (cam) {   // phones: the section starts right under the hero, so the zoom lands on its top
-    cap.classList.add('after-hero');
-    cleanups.push(function () { cap.classList.remove('after-hero'); });
-  }
-
   // ===== Scroll: gallery slides sideways =====
   var work = document.querySelector('.work');
   if (pin) {
     var track = work.querySelector('.track');
     var counter = work.querySelector('.counter b');
     var n = work.querySelectorAll('.panel:not(.panel-cta)').length;
-    work.classList.add('pinned');
+    work.classList.add('pinned', 'after-hero');
     track.removeAttribute('tabindex'); track.removeAttribute('role');
     var dist = function () { return Math.max(0, track.scrollWidth - window.innerWidth + 1); };
     gsap.to(track, {
@@ -825,26 +807,19 @@ mm.add({
       }
     });
     cleanups.push(function () {
-      work.classList.remove('pinned');
+      work.classList.remove('pinned', 'after-hero');
       track.setAttribute('tabindex', '0'); track.setAttribute('role', 'region');
     });
   }
 
-  // ===== Scroll: the frame opens up into the next level =====
-  var level = document.querySelector('.level');
-  if (pin) {
-    level.classList.add('pinned');
-    gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: { trigger: level, start: 'top top', end: '+=240%', pin: true, scrub: 0.6 }
-    })
-      .to('.lv-intro', { autoAlpha: 0, y: -30, duration: 0.2 }, 0.05)
-      .to('.lv-bg', { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: 0.5 }, 0)
-      .from('.lv-head', { autoAlpha: 0, y: 40, duration: 0.2 }, 0.5)
-      .from('.lv-item', { autoAlpha: 0, y: 40, stagger: 0.12, duration: 0.2 }, 0.62)
-      .to({}, { duration: 0.25 });
-    cleanups.push(function () { level.classList.remove('pinned'); });
+  // phones and short screens: the gallery still sits right under the hero, so the zoom lands on it
+  if (!pin && cam) {
+    work.classList.add('after-hero');
+    cleanups.push(function () { work.classList.remove('after-hero'); });
   }
+
+  // the camera's rear screen is read from the real gallery, so draw it again now that the layout is final
+  if (window.__qaRedraw) { window.__qaRedraw(); ScrollTrigger.addEventListener('refresh', window.__qaRedraw); cleanups.push(function () { ScrollTrigger.removeEventListener('refresh', window.__qaRedraw); }); }
 
   return function () { cleanups.forEach(function (fn) { fn(); }); };
 });
